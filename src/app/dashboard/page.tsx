@@ -2,33 +2,26 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+import { useAuthStore } from '@/store/auth';
+import { useTrackingStore } from '@/store/tracking';
+import { usePulseStore } from '@/store/pulse';
+import Header from '@/components/Header';
+import PulseModal from '@/components/PulseModal';
 
 export default function Dashboard() {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const { user, loading: authLoading, error: authError, getUser, signOut } = useAuthStore();
+  const { entries, currentEntry, loading: trackingLoading, error: trackingError, fetchEntries, startTracking, stopTracking } = useTrackingStore();
+  const { records: pulseRecords, loading: pulseLoading, error: pulseError, fetchRecords: fetchPulseRecords } = usePulseStore();
+  const [isPulseModalOpen, setIsPulseModalOpen] = useState(false);
 
   useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        router.push('/');
-        return;
-      }
-      setUser(user);
-      setLoading(false);
-    };
-
     getUser();
-  }, [router]);
+    fetchEntries();
+    fetchPulseRecords();
+  }, [getUser, fetchEntries, fetchPulseRecords]);
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    router.push('/');
-  };
-
-  if (loading) {
+  if (authLoading || trackingLoading || pulseLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <span className="loading loading-spinner loading-lg"></span>
@@ -36,93 +29,163 @@ export default function Dashboard() {
     );
   }
 
+  if (authError || !user) {
+    router.push('/');
+    return null;
+  }
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.push('/');
+  };
+
+  const handleTracking = async () => {
+    if (currentEntry) {
+      await stopTracking();
+    } else {
+      await startTracking('New tracking session');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-base-200">
-      <div className="navbar bg-base-100 shadow-lg px-4">
-        <div className="flex-1">
-          <a className="btn btn-ghost text-xl">Silent Tracker</a>
-        </div>
-        <div className="flex-none">
-          <div className="dropdown dropdown-end">
-            <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
-              <div className="w-10 rounded-full">
-                <img alt="Avatar" src={user?.user_metadata?.avatar_url || 'https://ui-avatars.com/api/?name=' + user?.email} />
-              </div>
-            </div>
-            <ul tabIndex={0} className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
-              <li>
-                <a className="justify-between">
-                  Profile
-                  <span className="badge">New</span>
-                </a>
-              </li>
-              <li><a>Settings</a></li>
-              <li><button onClick={handleSignOut}>Logout</button></li>
-            </ul>
-          </div>
-        </div>
-      </div>
+      <Header user={user} onSignOut={handleSignOut} />
 
       <div className="container mx-auto p-4">
         <div className="stats shadow w-full overflow-x-auto">
-          <div className="stats stats-vertical lg:stats-horizontal">
-            <div className="stat">
-              <div className="stat-figure text-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-8 h-8 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-              </div>
-              <div className="stat-title">Total Likes</div>
-              <div className="stat-value text-primary">25.6K</div>
-              <div className="stat-desc">21% more than last month</div>
-            </div>
-            
-            <div className="stat">
-              <div className="stat-figure text-secondary">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-8 h-8 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-              </div>
-              <div className="stat-title">Page Views</div>
-              <div className="stat-value text-secondary">2.6M</div>
-              <div className="stat-desc">14% more than last month</div>
-            </div>
-            
-            <div className="stat">
-              <div className="stat-figure text-secondary">
-                <div className="avatar online">
-                  <div className="w-16 rounded-full">
-                    <img src={user?.user_metadata?.avatar_url || 'https://ui-avatars.com/api/?name=' + user?.email} />
-                  </div>
-                </div>
-              </div>
-              <div className="stat-value">86%</div>
-              <div className="stat-title">Tasks done</div>
-              <div className="stat-desc text-secondary">31 tasks remaining</div>
+          <div className="stat">
+            <div className="stat-title">Total Sessions</div>
+            <div className="stat-value">{entries.length}</div>
+          </div>
+          <div className="stat">
+            <div className="stat-title">Active Session</div>
+            <div className="stat-value">{currentEntry ? 'Yes' : 'No'}</div>
+          </div>
+          <div className="stat">
+            <div className="stat-title">Last Session</div>
+            <div className="stat-value">
+              {entries[0] ? new Date(entries[0].start_time).toLocaleDateString() : 'N/A'}
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
           <div className="card bg-base-100 shadow-xl">
             <div className="card-body">
-              <h2 className="card-title">Recent Activity</h2>
-              <p>Your recent activities will appear here</p>
+              <h2 className="card-title">Tracking Controls</h2>
+              <button
+                className={`btn btn-lg ${currentEntry ? 'btn-error' : 'btn-primary'}`}
+                onClick={handleTracking}
+              >
+                {currentEntry ? 'Stop Tracking' : 'Start Tracking'}
+              </button>
             </div>
           </div>
+
           <div className="card bg-base-100 shadow-xl">
             <div className="card-body">
-              <h2 className="card-title">Quick Actions</h2>
-              <div className="flex flex-wrap gap-2">
-                <button className="btn btn-primary btn-sm">New Task</button>
-                <button className="btn btn-secondary btn-sm">View Reports</button>
-              </div>
-            </div>
-          </div>
-          <div className="card bg-base-100 shadow-xl">
-            <div className="card-body">
-              <h2 className="card-title">Notifications</h2>
-              <p>You have no new notifications</p>
+              <h2 className="card-title">Focus Check-in</h2>
+              <button
+                className="btn btn-lg btn-secondary"
+                onClick={() => setIsPulseModalOpen(true)}
+              >
+                Record Pulse
+              </button>
             </div>
           </div>
         </div>
+
+        <div className="card bg-base-100 shadow-xl mt-4">
+          <div className="card-body">
+            <h2 className="card-title">Recent Activity</h2>
+            <div className="overflow-x-auto">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Duration</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {entries.map((entry) => (
+                    <tr key={entry.id}>
+                      <td>{new Date(entry.start_time).toLocaleString()}</td>
+                      <td>{entry.description}</td>
+                      <td>
+                        {entry.end_time
+                          ? `${Math.round(
+                              (new Date(entry.end_time).getTime() - new Date(entry.start_time).getTime()) / 1000 / 60
+                            )} minutes`
+                          : 'In Progress'}
+                      </td>
+                      <td>
+                        <button className="btn btn-ghost btn-xs">Edit</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div className="card bg-base-100 shadow-xl mt-4">
+          <div className="card-body">
+            <h2 className="card-title">Pulse History</h2>
+            <div className="overflow-x-auto">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Focus Level</th>
+                    <th>Activity</th>
+                    <th>Tag</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pulseRecords.map((record) => (
+                    <tr key={record.id}>
+                      <td>{new Date(record.created_at).toLocaleString()}</td>
+                      <td>
+                        <div className="flex items-center gap-2">
+                          <div className="rating rating-sm">
+                            {[1, 2, 3, 4, 5].map((level) => (
+                              <input
+                                key={level}
+                                type="radio"
+                                name={`rating-${record.id}`}
+                                className="mask mask-star-2 bg-orange-400"
+                                checked={level === record.focus_level}
+                                readOnly
+                              />
+                            ))}
+                          </div>
+                          <span>{record.focus_level}/5</span>
+                        </div>
+                      </td>
+                      <td>{record.activity}</td>
+                      <td>{record.tag || '-'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        {(trackingError || authError || pulseError) && (
+          <div className="alert alert-error mt-4">
+            <span>{trackingError || authError || pulseError}</span>
+          </div>
+        )}
       </div>
+
+      <PulseModal
+        isOpen={isPulseModalOpen}
+        onClose={() => setIsPulseModalOpen(false)}
+      />
     </div>
   );
 } 
