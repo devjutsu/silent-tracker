@@ -33,21 +33,6 @@ export default function Settings() {
     init();
   }, [getUser]);
 
-  if (authLoading) {
-    return (
-      <div className="min-h-screen bg-base-200">
-        <div className="flex items-center justify-center h-screen">
-          <span className="loading loading-spinner loading-lg"></span>
-        </div>
-      </div>
-    );
-  }
-
-  if (authError || !user) {
-    router.push('/');
-    return null;
-  }
-
   const handleSignOut = async () => {
     try {
       await signOut();
@@ -100,103 +85,105 @@ export default function Settings() {
     return isEnabled ? 'Enabled' : 'Disabled';
   };
 
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header user={user!} onSignOut={handleSignOut} />
+        <main className="flex-1 flex flex-col items-center justify-center py-8">
+          <span className="loading loading-spinner loading-lg"></span>
+        </main>
+      </div>
+    );
+  }
+
+  if (authError || !user) {
+    router.push('/');
+    return null;
+  }
+
   return (
-    <div className="min-h-screen bg-base-200">
+    <div className="min-h-screen flex flex-col">
       <Header user={user} onSignOut={handleSignOut} />
-
-      <div className="container mx-auto p-4">
-        <div className="card bg-base-100 shadow-xl">
-          <div className="card-body">
-            <h2 className="card-title text-2xl mb-4">Settings</h2>
-
-            {/* Notification Settings */}
-            <div className="space-y-6">
-              <div>
-                <h3 className="text-lg font-semibold mb-2">Notifications</h3>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-base-content/70">
-                        Status: <span className="font-medium">{getNotificationStatus()}</span>
-                      </p>
-                      {permission === 'denied' && (
-                        <p className="text-sm text-error mt-1">
-                          Please enable notifications in your browser settings
-                        </p>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <button
-                        className={`btn ${isEnabled ? 'btn-error' : 'btn-primary'}`}
-                        onClick={handleNotificationToggle}
-                        disabled={permission === 'denied'}
-                      >
-                        {isEnabled ? 'Disable' : 'Enable'} Notifications
-                      </button>
-                    </div>
+      <main className="flex-1 flex flex-col items-center pt-8">
+        <h2 className="text-3xl font-bold mb-8">Settings</h2>
+        <div className="flex flex-col gap-8 w-full max-w-2xl">
+          <div className="card bg-base-100 shadow-xl p-6 rounded-box">
+            <h3 className="text-lg font-semibold mb-2">Notifications</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+              <div className="space-y-2 md:col-span-2">
+                <p className="text-base-content/70">
+                  Status: <span className="font-medium">{getNotificationStatus()}</span>
+                </p>
+                {isEnabled && permission === 'granted' && (
+                  <div className="form-control max-w-xs">
+                    <label className="label">
+                      <span className="label-text">Notification Interval (seconds)</span>
+                    </label>
+                    <input
+                      type="number"
+                      placeholder="e.g., 60"
+                      className="input input-bordered w-full"
+                      value={notificationInterval}
+                      onChange={handleIntervalChange}
+                      min="1"
+                    />
                   </div>
-
-                  {isEnabled && permission === 'granted' && (
-                    <div className="form-control">
-                      <label className="label">
-                        <span className="label-text">Notification Interval (seconds)</span>
-                      </label>
-                      <input
-                        type="number"
-                        placeholder="e.g., 60"
-                        className="input input-bordered w-full max-w-xs"
-                        value={notificationInterval}
-                        onChange={handleIntervalChange}
-                        min="1"
-                      />
-                    </div>
-                  )}
-                </div>
+                )}
+                {permission === 'denied' && (
+                  <p className="text-sm text-error mt-1">
+                    Please enable notifications in your browser settings
+                  </p>
+                )}
               </div>
-
-              {/* Theme Settings */}
-              <div>
-                <h3 className="text-lg font-semibold mb-2">Theme</h3>
-                <div className="flex items-center gap-2">
-                  <select className="select select-bordered w-full max-w-xs">
-                    <option value="light">Light</option>
-                    <option value="dark">Dark</option>
-                    <option value="abyss">Abyss</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Account Settings */}
-              <div>
-                <h3 className="text-lg font-semibold mb-2">Account</h3>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span>Email</span>
-                    <span className="font-medium">{user.email}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span>Last Sign In</span>
-                    <span className="font-medium">
-                      {new Date(user.last_sign_in_at || '').toLocaleString()}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="pt-4">
-                <div className="space-y-2">
-                  <button
-                    className="btn btn-error btn-outline w-full"
-                    onClick={handleSignOut}
-                  >
-                    Sign Out
-                  </button>
-                </div>
+              <div className="flex md:justify-end">
+                <button
+                  className={`btn btn-sm ${isEnabled ? 'btn-neutral' : 'btn-primary'} w-full md:w-auto`}
+                  onClick={handleNotificationToggle}
+                  disabled={permission === 'denied'}
+                >
+                  {isEnabled ? 'Disable' : 'Enable'} Notifications
+                </button>
               </div>
             </div>
           </div>
+
+          <div className="card bg-base-100 shadow-xl p-6 rounded-box">
+            <h3 className="text-lg font-semibold mb-2">Theme</h3>
+            <div className="flex items-center gap-2 max-w-xs">
+              <select className="select select-bordered w-full">
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+                <option value="abyss">Abyss</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="card bg-base-100 shadow-xl p-6 rounded-box">
+            <h3 className="text-lg font-semibold mb-2">Account</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-w-lg">
+              <div className="flex flex-col gap-1">
+                <span className="text-sm text-base-content/70">Email</span>
+                <span className="font-medium break-all">{user.email}</span>
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="text-sm text-base-content/70">Last Sign In</span>
+                <span className="font-medium">
+                  {new Date(user.last_sign_in_at || '').toLocaleString()}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="card bg-base-100 shadow-xl p-6 rounded-box flex justify-center">
+            <button
+              className="btn btn-error btn-outline w-full max-w-xs text-lg"
+              onClick={handleSignOut}
+            >
+              Sign Out
+            </button>
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 } 

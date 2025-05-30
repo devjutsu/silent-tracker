@@ -83,18 +83,12 @@ export default function Dashboard() {
       <div className="container mx-auto p-4">
         <div className="stats shadow w-full overflow-x-auto">
           <div className="stat">
-            <div className="stat-title">Total Sessions</div>
+            <div className="stat-title">Today Sessions</div>
             <div className="stat-value">{entries.length}</div>
           </div>
           <div className="stat">
             <div className="stat-title">Active Session</div>
             <div className="stat-value">{currentEntry ? 'Yes' : 'No'}</div>
-          </div>
-          <div className="stat">
-            <div className="stat-title">Last Session</div>
-            <div className="stat-value">
-              {entries[0] ? new Date(entries[0].start_time).toLocaleDateString() : 'N/A'}
-            </div>
           </div>
         </div>
 
