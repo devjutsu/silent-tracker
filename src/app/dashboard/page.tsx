@@ -219,10 +219,10 @@ export default function Dashboard() {
         ) : (
           <div className="card bg-base-100 shadow-xl mt-4">
             <div className="card-body">
-              <div className="flex flex-col items-center justify-center py-8 text-center">
-                <div className="text-6xl mb-4">📊</div>
-                <h3 className="text-lg font-semibold mb-2">No Pulse Records Yet</h3>
-                <p className="text-base-content/70 mb-4">
+              <div className="flex flex-col items-center justify-center py-4 text-center">
+                <div className="text-4xl">📊</div>
+                <h3 className="text-lg font-semibold">No records yet</h3>
+                <p className="text-base-content/70 mb-2">
                   Start tracking your focus levels to see your history here.
                 </p>
                 <button

@@ -62,11 +62,10 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ loading: true, error: null });
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      set({ user: null });
+      set({ user: null, loading: false });
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : 'An error occurred' });
-    } finally {
-      set({ loading: false });
+      console.error('Error signing out:', error);
+      set({ error: (error as Error).message, loading: false });
     }
   },
 
@@ -86,14 +85,59 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   getUser: async () => {
     try {
+      console.log('Getting user...');
       set({ loading: true, error: null });
-      const { data: { user }, error } = await supabase.auth.getUser();
-      if (error) throw error;
-      set({ user });
+      
+      // First try to get the session
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError) {
+        console.error('Session error:', sessionError);
+        throw sessionError;
+      }
+
+      if (session?.user) {
+        set({ user: session.user, loading: false });
+      } else {
+        // If no session, try to get the user directly
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
+        console.log('Direct user fetch:', user);
+        
+        if (userError) {
+          console.error('User error:', userError);
+          throw userError;
+        }
+
+        if (user) {
+          console.log('User found directly:', user);
+          set({ user, loading: false });
+        } else {
+          console.log('No user found');
+          set({ user: null, loading: false });
+        }
+      }
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : 'An error occurred' });
-    } finally {
-      set({ loading: false });
+      console.error('Error in getUser:', error);
+      set({ error: (error as Error).message, loading: false });
     }
   },
-})); 
+}));
+
+// Initialize auth state
+console.log('Setting up auth state change listener...');
+supabase.auth.onAuthStateChange((event, session) => {
+  if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+    useAuthStore.getState().getUser();
+  } else if (event === 'SIGNED_OUT') {
+    useAuthStore.setState({ user: null, loading: false });
+  }
+});
+
+// Initial session check
+console.log('Performing initial session check...');
+supabase.auth.getSession().then(({ data: { session } }) => {
+  if (session?.user) {
+    useAuthStore.getState().setUser(session.user);
+  }
+  useAuthStore.getState().setLoading(false);
+}); 

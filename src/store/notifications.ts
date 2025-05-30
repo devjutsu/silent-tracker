@@ -32,10 +32,34 @@ export const useNotificationStore = create<NotificationState>()(
       setLastNotificationTime: (time) => set({ lastNotificationTime: time }),
       setModalOpen: (isOpen) => {
         set({ isModalOpen: isOpen });
-        // If modal is closed and notifications are enabled, restart the timer
-        if (!isOpen && get().isEnabled && get().permission === 'granted') {
-          console.log('Modal closed, restarting notification timer');
-          get().startNotifications();
+        console.log(`Modal state changed: ${isOpen}. Current intervalId: ${get().intervalId}`);
+
+        if (!isOpen) {
+          // Modal is closed, check if timer should restart
+          console.log('Modal closed, checking if timer should restart.');
+          if (get().isEnabled && get().permission === 'granted') {
+             console.log('Notifications enabled and permitted.');
+             // Start timer only if one is not already running
+             if (get().intervalId === null) {
+                console.log('Timer is not running, starting notifications.');
+                // Use a slight delay to allow state updates to propagate if needed
+                setTimeout(() => {
+                     // Re-check conditions after timeout
+                    if (!get().isModalOpen && get().isEnabled && get().permission === 'granted' && get().intervalId === null) {
+                       console.log('Attempting to restart timer after modal close (delayed check)');
+                       get().startNotifications();
+                    }
+                }, 100);
+             } else {
+                 console.log('Timer is already running, no need to restart.');
+             }
+          } else {
+              console.log('Notifications not enabled or permitted, not restarting timer.');
+          }
+        } else if (isOpen && get().intervalId) {
+          // If modal is opened and timer is running, stop it
+          console.log('Modal opened, stopping notification timer.');
+          get().stopNotifications();
         }
       },
 
@@ -46,28 +70,30 @@ export const useNotificationStore = create<NotificationState>()(
         }
 
         try {
-          // Check current permission status
           const currentPermission = Notification.permission;
           console.log('Current notification permission:', currentPermission);
 
-          // If permission was previously denied, we need to guide the user to browser settings
           if (currentPermission === 'denied') {
             console.log('Notification permission was denied. Please enable in browser settings.');
             set({ permission: 'denied', isEnabled: false });
             return;
           }
 
-          // Request permission if not already granted
           const permission = await Notification.requestPermission();
           console.log('New notification permission:', permission);
           set({ permission });
 
           if (permission === 'granted') {
-            console.log('Notification permission granted, starting timer');
-            get().startNotifications();
+            console.log('Notification permission granted.');
+            set({ isEnabled: true }); // Enable notifications
+            // Start timer only if modal is closed
+            if (!get().isModalOpen) {
+              get().startNotifications();
+            }
           } else {
-            // If permission is denied, stop notifications
-            get().stopNotifications();
+            console.log('Notification permission denied.');
+            get().stopNotifications(); // Stop timer
+            set({ isEnabled: false }); // Disable notifications
           }
         } catch (error) {
           console.error('Error requesting notification permission:', error);
@@ -76,64 +102,58 @@ export const useNotificationStore = create<NotificationState>()(
       },
 
       startNotifications: () => {
-        const currentIntervalId = get().intervalId;
-        if (currentIntervalId) {
-          console.log('Clearing existing notification timer');
-          clearInterval(currentIntervalId);
+        // Always clear any existing timer before starting a new one
+        // Use stopNotifications to ensure intervalId is set to null
+        get().stopNotifications(); 
+
+        // Check conditions before starting the timer
+        if (Notification.permission !== 'granted' || !get().isEnabled || get().isModalOpen) {
+           console.log('Cannot start timer: conditions not met (permission, enabled, or modal open)');
+           return;
         }
 
-        // Check if permission is still granted
-        if (Notification.permission !== 'granted') {
-          console.log('Notification permission not granted, requesting permission');
-          get().requestPermission();
-          return;
-        }
-
-        // Don't start if modal is open
-        if (get().isModalOpen) {
-          console.log('Modal is open, skipping notification timer start');
-          return;
-        }
-
-        console.log('Starting notification timer 🍎');
+        console.log('Starting new notification timer 🍎');
         const id = setInterval(() => {
-          // Check permission status before sending notification
-          if (Notification.permission !== 'granted') {
-            console.log('Notification permission revoked, stopping timer');
+          // Re-check conditions inside interval just in case
+          if (Notification.permission !== 'granted' || !get().isEnabled || get().isModalOpen) {
+            console.log('Conditions changed during interval, stopping timer.');
             get().stopNotifications();
             return;
           }
 
-          if (!get().isModalOpen) {
-            console.log('Sending notification');
-            const notification = new Notification('Focus Check-in', {
-              body: 'How is your focus level right now?',
-              icon: '/favicon.ico',
-            });
+          console.log('Sending notification');
+          const notification = new Notification('Focus Check-in', {
+            body: 'How is your focus level right now?',
+            icon: '/favicon.ico',
+          });
 
-            notification.onclick = () => {
-              console.log('Notification clicked, stopping timer');
-              window.focus();
-              // Stop the timer when notification is clicked
-              get().stopNotifications();
-              // Dispatch a custom event that the app can listen to
-              window.dispatchEvent(new CustomEvent('showPulseModal'));
-            };
+          notification.onclick = () => {
+            console.log('Notification clicked, opening modal and stopping timer.');
+            window.focus();
+            // Dispatch a custom event that the app can listen to
+            window.dispatchEvent(new CustomEvent('showPulseModal'));
+             // The timer is stopped below, after sending the notification
+          };
 
-            set({ lastNotificationTime: Date.now() });
-          }
+          set({ lastNotificationTime: Date.now() });
+
+          // Stop the timer immediately after sending a notification
+          console.log('Notification sent, stopping timer until modal is closed.');
+          get().stopNotifications(); // Stop timer after sending
+
         }, 60000); // 60 seconds
 
-        set({ intervalId: id, isEnabled: true });
+        set({ intervalId: id }); // Set the new interval ID
       },
 
       stopNotifications: () => {
         const currentIntervalId = get().intervalId;
         if (currentIntervalId) {
-          console.log('Stopping notification timer');
+          console.log('Stopping notification timer', currentIntervalId);
           clearInterval(currentIntervalId);
-          set({ intervalId: null, isEnabled: false });
+          set({ intervalId: null }); // Set intervalId to null when stopped
         }
+         // isEnabled state is controlled by user toggle in settings, not here.
       },
     }),
     {

@@ -92,14 +92,14 @@ export default function Home() {
 
           {/* Auth Form */}
           <form onSubmit={handleAuth} className="space-y-4">
-            <div className="form-control">
+            <div className="form-control w-full">
               <label className="label">
                 <span className="label-text">Email</span>
               </label>
               <input
                 type="email"
                 placeholder="email@example.com"
-                className="input input-bordered"
+                className="input input-bordered w-full"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -107,14 +107,14 @@ export default function Home() {
             </div>
 
             {mode !== 'reset' && (
-              <div className="form-control">
+              <div className="form-control w-full">
                 <label className="label">
                   <span className="label-text">Password</span>
                 </label>
                 <input
                   type="password"
                   placeholder="••••••••"
-                  className="input input-bordered"
+                  className="input input-bordered w-full"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -135,19 +135,19 @@ export default function Home() {
           {mode === 'sign-in' && (
             <div className="flex flex-col gap-2">
               <button
-                className="btn btn-outline"
+                className="btn btn-outline w-full"
                 onClick={() => handleSocialLogin('google')}
               >
                 Continue with Google
               </button>
               <button
-                className="btn btn-outline"
+                className="btn btn-outline w-full"
                 onClick={() => handleSocialLogin('facebook')}
               >
                 Continue with Facebook
               </button>
               <button
-                className="btn btn-outline"
+                className="btn btn-outline w-full"
                 onClick={() => handleSocialLogin('apple')}
               >
                 Continue with Apple
