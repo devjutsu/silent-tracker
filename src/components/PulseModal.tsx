@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { usePulseStore } from '@/store/pulse';
+import { useNotificationStore } from '@/store/notifications';
 import toast from 'react-hot-toast';
 
 type ActivityType = 'work' | 'study' | 'rest' | 'procrastination' | 'fitness';
@@ -13,6 +14,7 @@ interface PulseModalProps {
 
 export default function PulseModal({ isOpen, onClose }: PulseModalProps) {
   const { addRecord } = usePulseStore();
+  const { setModalOpen } = useNotificationStore();
   const [focusLevel, setFocusLevel] = useState(3);
   const [activity, setActivity] = useState<ActivityType>('work');
   const [tag, setTag] = useState('');
@@ -20,13 +22,16 @@ export default function PulseModal({ isOpen, onClose }: PulseModalProps) {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      setModalOpen(true);
     } else {
       document.body.style.overflow = 'unset';
+      setModalOpen(false);
     }
     return () => {
       document.body.style.overflow = 'unset';
+      setModalOpen(false);
     };
-  }, [isOpen]);
+  }, [isOpen, setModalOpen]);
 
   if (!isOpen) return null;
 
@@ -52,19 +57,19 @@ export default function PulseModal({ isOpen, onClose }: PulseModalProps) {
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-base-100 rounded-lg p-6 w-full max-w-md shadow-xl">
-        <h2 className="text-2xl font-bold mb-4">Record Your Focus Level</h2>
+        <h2 className="text-xl sm:text-2xl font-bold mb-2">Record Your Focus Level</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="label">
+          <div className="">
+            <label className="label mr-2">
               <span className="label-text">Focus Level (1-5)</span>
             </label>
-            <div className="rating rating-lg">
+            <div className="rating rating-md">
               {[1, 2, 3, 4, 5].map((level) => (
                 <input
                   key={level}
                   type="radio"
                   name="focus-level"
-                  className="mask mask-star-2 bg-orange-400"
+                  className="mask mask-star-2 bg-primary"
                   checked={focusLevel === level}
                   onChange={() => setFocusLevel(level)}
                 />

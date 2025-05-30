@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth';
 import { useTrackingStore } from '@/store/tracking';
 import { usePulseStore } from '@/store/pulse';
+import { useNotificationStore } from '@/store/notifications';
 import Header from '@/components/Header';
 import PulseModal from '@/components/PulseModal';
 import toast from 'react-hot-toast';
@@ -14,13 +15,30 @@ export default function Dashboard() {
   const { user, loading: authLoading, error: authError, getUser, signOut } = useAuthStore();
   const { entries, currentEntry, loading: trackingLoading, error: trackingError, fetchEntries, startTracking, stopTracking } = useTrackingStore();
   const { records: pulseRecords, loading: pulseLoading, error: pulseError, fetchRecords: fetchPulseRecords } = usePulseStore();
+  const { requestPermission, isEnabled, startNotifications } = useNotificationStore();
   const [isPulseModalOpen, setIsPulseModalOpen] = useState(false);
 
   useEffect(() => {
     getUser();
     fetchEntries();
     fetchPulseRecords();
-  }, [getUser, fetchEntries, fetchPulseRecords]);
+
+    // Request notification permission on first visit
+    if (!isEnabled) {
+      requestPermission();
+    }
+
+    // Listen for notification click events
+    const handleShowPulseModal = () => {
+      setIsPulseModalOpen(true);
+    };
+
+    window.addEventListener('showPulseModal', handleShowPulseModal);
+
+    return () => {
+      window.removeEventListener('showPulseModal', handleShowPulseModal);
+    };
+  }, [getUser, fetchEntries, fetchPulseRecords, requestPermission, isEnabled]);
 
   if (authLoading || trackingLoading || pulseLoading) {
     return (
@@ -154,49 +172,69 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="card bg-base-100 shadow-xl mt-4">
-          <div className="card-body">
-            <h2 className="card-title">Pulse History</h2>
-            <div className="overflow-x-auto">
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Focus Level</th>
-                    <th>Activity</th>
-                    <th>Tag</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {pulseRecords.map((record) => (
-                    <tr key={record.id}>
-                      <td>{new Date(record.created_at).toLocaleString()}</td>
-                      <td>
-                        <div className="flex items-center gap-2">
-                          <div className="rating rating-sm">
-                            {[1, 2, 3, 4, 5].map((level) => (
-                              <input
-                                key={level}
-                                type="radio"
-                                name={`rating-${record.id}`}
-                                className="mask mask-star-2 bg-info"
-                                checked={level === record.focus_level}
-                                readOnly
-                              />
-                            ))}
-                          </div>
-                          <span>{record.focus_level}/5</span>
-                        </div>
-                      </td>
-                      <td>{record.activity}</td>
-                      <td>{record.tag || '-'}</td>
+        {pulseRecords.length > 0 ? (
+          <div className="card bg-base-100 shadow-xl mt-4">
+            <div className="card-body">
+              <h2 className="card-title">Pulse History</h2>
+              <div className="overflow-x-auto">
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Focus Level</th>
+                      <th>Activity</th>
+                      <th>Tag</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {pulseRecords.map((record) => (
+                      <tr key={record.id}>
+                        <td>{new Date(record.created_at).toLocaleString()}</td>
+                        <td>
+                          <div className="flex items-center gap-2">
+                            <div className="rating rating-sm">
+                              {[1, 2, 3, 4, 5].map((level) => (
+                                <input
+                                  key={level}
+                                  type="radio"
+                                  name={`rating-${record.id}`}
+                                  className="mask mask-star-2 bg-primary"
+                                  checked={level === record.focus_level}
+                                  readOnly
+                                />
+                              ))}
+                            </div>
+                            <span>{record.focus_level}/5</span>
+                          </div>
+                        </td>
+                        <td>{record.activity}</td>
+                        <td>{record.tag || '-'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="card bg-base-100 shadow-xl mt-4">
+            <div className="card-body">
+              <div className="flex flex-col items-center justify-center py-8 text-center">
+                <div className="text-6xl mb-4">📊</div>
+                <h3 className="text-lg font-semibold mb-2">No Pulse Records Yet</h3>
+                <p className="text-base-content/70 mb-4">
+                  Start tracking your focus levels to see your history here.
+                </p>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setIsPulseModalOpen(true)}
+                >
+                  Record Your First Pulse
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {(trackingError || authError || pulseError) && (
           <div className="alert alert-error mt-4">
