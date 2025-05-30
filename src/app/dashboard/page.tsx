@@ -7,6 +7,7 @@ import { useTrackingStore } from '@/store/tracking';
 import { usePulseStore } from '@/store/pulse';
 import Header from '@/components/Header';
 import PulseModal from '@/components/PulseModal';
+import toast from 'react-hot-toast';
 
 export default function Dashboard() {
   const router = useRouter();
@@ -37,14 +38,24 @@ export default function Dashboard() {
   const handleSignOut = async () => {
     await signOut();
     router.push('/');
+    toast.success('Signed out successfully');
   };
 
   const handleTracking = async () => {
     if (currentEntry) {
       await stopTracking();
+      toast.success('Tracking stopped');
     } else {
       await startTracking('New tracking session');
+      toast.success('Tracking started');
     }
+  };
+
+  const handleTestToast = () => {
+    toast('This is a test notification!', {
+      icon: '👋',
+      duration: 4000,
+    });
   };
 
   return (
@@ -92,6 +103,18 @@ export default function Dashboard() {
                 Record Pulse
               </button>
             </div>
+          </div>
+        </div>
+
+        <div className="card bg-base-100 shadow-xl mt-4">
+          <div className="card-body">
+            <h2 className="card-title">Test Notifications</h2>
+            <button
+              className="btn btn-outline"
+              onClick={handleTestToast}
+            >
+              Fire Toast
+            </button>
           </div>
         </div>
 
@@ -156,7 +179,7 @@ export default function Dashboard() {
                                 key={level}
                                 type="radio"
                                 name={`rating-${record.id}`}
-                                className="mask mask-star-2 bg-orange-400"
+                                className="mask mask-star-2 bg-info"
                                 checked={level === record.focus_level}
                                 readOnly
                               />

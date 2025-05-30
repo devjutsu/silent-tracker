@@ -1,145 +1,126 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { usePulseStore } from '@/store/pulse';
+import toast from 'react-hot-toast';
+
+type ActivityType = 'work' | 'study' | 'rest' | 'procrastination' | 'fitness';
 
 interface PulseModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-type ActivityType = 'work' | 'study' | 'rest' | 'procrastination' | 'fitness';
-
-const ACTIVITY_DESCRIPTIONS: Record<ActivityType, string> = {
-  work: 'Professional tasks, meetings, or work-related activities',
-  study: 'Learning, reading, or educational activities',
-  rest: 'Relaxation, meditation, or taking a break',
-  procrastination: 'Avoiding tasks, distractions, or unproductive activities',
-  fitness: 'Exercise, sports, or physical activities'
-};
-
 export default function PulseModal({ isOpen, onClose }: PulseModalProps) {
-  const { addRecord, loading, error } = usePulseStore();
+  const { addRecord } = usePulseStore();
   const [focusLevel, setFocusLevel] = useState(3);
   const [activity, setActivity] = useState<ActivityType>('work');
   const [tag, setTag] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await addRecord(focusLevel, activity, tag || undefined);
-    if (!error) {
-      onClose();
-      setActivity('work');
-      setTag('');
-      setFocusLevel(3);
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
     }
-  };
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await addRecord(focusLevel, activity, tag.trim() || undefined);
+      toast.success('Pulse record added successfully');
+      onClose();
+    } catch (error) {
+      toast.error('Failed to add pulse record');
+    }
+  };
+
+  const activityDescriptions: Record<ActivityType, string> = {
+    work: 'Professional tasks and work-related activities',
+    study: 'Learning, reading, or educational activities',
+    rest: 'Relaxation, breaks, or leisure time',
+    procrastination: 'Time spent avoiding tasks or being unproductive',
+    fitness: 'Exercise, sports, or physical activities'
+  };
+
   return (
-    <div className="modal modal-open">
-      <div className="modal-box">
-        <h3 className="font-bold text-lg mb-4">Record Your Focus Level</h3>
-        
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-base-100 rounded-lg p-6 w-full max-w-md shadow-xl">
+        <h2 className="text-2xl font-bold mb-4">Record Your Focus Level</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Focus Level */}
-          <div className="form-control">
+          <div>
             <label className="label">
               <span className="label-text">Focus Level (1-5)</span>
             </label>
-            <div className="flex items-center gap-2">
-              <input
-                type="range"
-                min="1"
-                max="5"
-                value={focusLevel}
-                onChange={(e) => setFocusLevel(parseInt(e.target.value))}
-                className="range range-primary"
-                step="1"
-              />
-              <span className="text-lg font-bold">{focusLevel}</span>
-            </div>
-            <div className="flex justify-between text-xs px-2 mt-1">
-              <span>Low Focus</span>
-              <span>High Focus</span>
+            <div className="rating rating-lg">
+              {[1, 2, 3, 4, 5].map((level) => (
+                <input
+                  key={level}
+                  type="radio"
+                  name="focus-level"
+                  className="mask mask-star-2 bg-orange-400"
+                  checked={focusLevel === level}
+                  onChange={() => setFocusLevel(level)}
+                />
+              ))}
             </div>
           </div>
 
-          {/* Activity */}
-          <div className="form-control">
+          <div>
             <label className="label">
-              <span className="label-text">What are you doing?</span>
+              <span className="label-text">Activity Type</span>
             </label>
             <select
               className="select select-bordered w-full"
               value={activity}
               onChange={(e) => setActivity(e.target.value as ActivityType)}
-              required
             >
-              {Object.entries(ACTIVITY_DESCRIPTIONS).map(([value, description]) => (
-                <option key={value} value={value}>
-                  {value.charAt(0).toUpperCase() + value.slice(1)}
-                </option>
-              ))}
+              <option value="work">Work</option>
+              <option value="study">Study</option>
+              <option value="rest">Rest</option>
+              <option value="procrastination">Procrastination</option>
+              <option value="fitness">Fitness</option>
             </select>
-            <label className="label">
-              <span className="label-text-alt text-base-content/70">
-                {ACTIVITY_DESCRIPTIONS[activity]}
-              </span>
-            </label>
+            <p className="text-sm text-base-content/70 mt-1">
+              {activityDescriptions[activity]}
+            </p>
           </div>
 
-          {/* Tag */}
-          <div className="form-control">
+          <div>
             <label className="label">
               <span className="label-text">Tag (optional)</span>
             </label>
             <input
               type="text"
-              className="input input-bordered"
-              placeholder="e.g., project name, subject, exercise type"
+              placeholder="e.g., project-name, meeting, exercise"
+              className="input input-bordered w-full"
               value={tag}
               onChange={(e) => setTag(e.target.value)}
             />
           </div>
 
-          {/* Error Message */}
-          {error && (
-            <div className="alert alert-error">
-              <span>{error}</span>
-            </div>
-          )}
-
-          {/* Buttons */}
-          <div className="modal-action">
+          <div className="flex justify-end gap-2 mt-6">
             <button
               type="button"
-              className="btn"
+              className="btn btn-ghost"
               onClick={onClose}
-              disabled={loading}
             >
               Cancel
             </button>
             <button
               type="submit"
               className="btn btn-primary"
-              disabled={loading}
             >
-              {loading ? (
-                <>
-                  <span className="loading loading-spinner"></span>
-                  Saving...
-                </>
-              ) : (
-                'Save Record'
-              )}
+              Save Record
             </button>
           </div>
         </form>
-      </div>
-      <div className="modal-backdrop" onClick={onClose}>
-        <button className="cursor-default">close</button>
       </div>
     </div>
   );
