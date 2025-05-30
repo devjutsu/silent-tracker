@@ -176,7 +176,7 @@ export default function Settings() {
 
           <div className="card bg-base-100 shadow-xl p-6 rounded-box flex justify-center">
             <button
-              className="btn btn-error btn-outline w-full max-w-xs text-lg"
+              className="btn btn-error btn-outline w-full max-w-xs text-lg mx-auto"
               onClick={handleSignOut}
             >
               Sign Out
