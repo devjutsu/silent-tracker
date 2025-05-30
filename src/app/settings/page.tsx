@@ -13,9 +13,12 @@ export default function Settings() {
   const { 
     permission, 
     isEnabled, 
+    notificationInterval,
     requestPermission, 
     startNotifications, 
-    stopNotifications 
+    stopNotifications, 
+    setIsEnabled,
+    setNotificationInterval,
   } = useNotificationStore();
 
   useEffect(() => {
@@ -59,10 +62,12 @@ export default function Settings() {
   const handleNotificationToggle = async () => {
     try {
       if (isEnabled) {
+        setIsEnabled(false);
         stopNotifications();
         toast.success('Notifications disabled');
       } else {
         if (permission === 'granted') {
+          setIsEnabled(true);
           startNotifications();
           toast.success('Notifications enabled');
         } else {
@@ -72,6 +77,13 @@ export default function Settings() {
     } catch (error) {
       console.error('Error toggling notifications:', error);
       toast.error('Failed to update notification settings');
+    }
+  };
+
+  const handleIntervalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value, 10);
+    if (!isNaN(value) && value > 0) {
+      setNotificationInterval(value);
     }
   };
 
@@ -101,26 +113,44 @@ export default function Settings() {
             <div className="space-y-6">
               <div>
                 <h3 className="text-lg font-semibold mb-2">Notifications</h3>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-base-content/70">
-                      Status: <span className="font-medium">{getNotificationStatus()}</span>
-                    </p>
-                    {permission === 'denied' && (
-                      <p className="text-sm text-error mt-1">
-                        Please enable notifications in your browser settings
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-base-content/70">
+                        Status: <span className="font-medium">{getNotificationStatus()}</span>
                       </p>
-                    )}
+                      {permission === 'denied' && (
+                        <p className="text-sm text-error mt-1">
+                          Please enable notifications in your browser settings
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        className={`btn ${isEnabled ? 'btn-error' : 'btn-primary'}`}
+                        onClick={handleNotificationToggle}
+                        disabled={permission === 'denied'}
+                      >
+                        {isEnabled ? 'Disable' : 'Enable'} Notifications
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      className={`btn ${isEnabled ? 'btn-error' : 'btn-primary'}`}
-                      onClick={handleNotificationToggle}
-                      disabled={permission === 'denied'}
-                    >
-                      {isEnabled ? 'Disable' : 'Enable'} Notifications
-                    </button>
-                  </div>
+
+                  {isEnabled && permission === 'granted' && (
+                    <div className="form-control">
+                      <label className="label">
+                        <span className="label-text">Notification Interval (seconds)</span>
+                      </label>
+                      <input
+                        type="number"
+                        placeholder="e.g., 60"
+                        className="input input-bordered w-full max-w-xs"
+                        value={notificationInterval}
+                        onChange={handleIntervalChange}
+                        min="1"
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
 

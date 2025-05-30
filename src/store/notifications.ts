@@ -7,11 +7,13 @@ interface NotificationState {
   isEnabled: boolean;
   lastNotificationTime: number | null;
   isModalOpen: boolean;
+  notificationInterval: number;
   setPermission: (permission: NotificationPermission) => void;
   setIntervalId: (id: ReturnType<typeof setInterval> | null) => void;
   setIsEnabled: (enabled: boolean) => void;
   setLastNotificationTime: (time: number | null) => void;
   setModalOpen: (isOpen: boolean) => void;
+  setNotificationInterval: (interval: number) => void;
   requestPermission: () => Promise<void>;
   startNotifications: () => void;
   stopNotifications: () => void;
@@ -25,6 +27,7 @@ export const useNotificationStore = create<NotificationState>()(
       isEnabled: false,
       lastNotificationTime: null,
       isModalOpen: false,
+      notificationInterval: 60,
 
       setPermission: (permission) => set({ permission }),
       setIntervalId: (id) => set({ intervalId: id }),
@@ -60,6 +63,18 @@ export const useNotificationStore = create<NotificationState>()(
           // If modal is opened and timer is running, stop it
           console.log('Modal opened, stopping notification timer.');
           get().stopNotifications();
+        }
+      },
+
+      setNotificationInterval: (interval) => {
+        // Ensure interval is a positive number, default to 60 if not.
+        const newInterval = Math.max(1, interval || 60);
+        console.log(`Setting notification interval to ${newInterval} seconds`);
+        set({ notificationInterval: newInterval });
+        // If notifications are currently enabled and modal is closed, restart timer with new interval
+        if (get().isEnabled && get().permission === 'granted' && !get().isModalOpen) {
+          console.log('Interval changed while active, restarting timer...');
+          get().startNotifications();
         }
       },
 
@@ -112,7 +127,7 @@ export const useNotificationStore = create<NotificationState>()(
            return;
         }
 
-        console.log('Starting new notification timer 🍎');
+        console.log(`Starting new notification timer with interval ${get().notificationInterval} seconds 🍎`);
         const id = setInterval(() => {
           // Re-check conditions inside interval just in case
           if (Notification.permission !== 'granted' || !get().isEnabled || get().isModalOpen) {
@@ -141,7 +156,7 @@ export const useNotificationStore = create<NotificationState>()(
           console.log('Notification sent, stopping timer until modal is closed.');
           get().stopNotifications(); // Stop timer after sending
 
-        }, 60000); // 60 seconds
+        }, get().notificationInterval * 1000); // Use the configured interval (in milliseconds)
 
         set({ intervalId: id }); // Set the new interval ID
       },
@@ -158,6 +173,12 @@ export const useNotificationStore = create<NotificationState>()(
     }),
     {
       name: 'notification-storage',
+      // Include notificationInterval in storage
+      partialize: (state) => ({
+        permission: state.permission,
+        isEnabled: state.isEnabled,
+        notificationInterval: state.notificationInterval,
+      }),
     }
   )
 ); 
