@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth';
 import { useNotificationStore } from '@/store/notifications';
+import { useThemeStore } from '@/store/theme';
 import Header from '@/components/Header';
 import toast from 'react-hot-toast';
 
@@ -20,6 +21,7 @@ export default function Settings() {
     setIsEnabled,
     setNotificationInterval,
   } = useNotificationStore();
+  const { theme, toggleTheme } = useThemeStore();
 
   useEffect(() => {
     const init = async () => {
@@ -149,12 +151,15 @@ export default function Settings() {
 
           <div className="card bg-base-100 shadow-xl p-6 rounded-box">
             <h3 className="text-lg font-semibold mb-2">Theme</h3>
-            <div className="flex items-center gap-2 max-w-xs">
-              <select className="select select-bordered w-full">
-                <option value="light">Light</option>
-                <option value="dark">Dark</option>
-                <option value="abyss">Abyss</option>
-              </select>
+            <div className="flex items-center gap-4">
+              <span className="text-base-content/70">Light</span>
+              <input
+                type="checkbox"
+                className="toggle toggle-primary"
+                checked={theme === 'abyss'}
+                onChange={toggleTheme}
+              />
+              <span className="text-base-content/70">Dark</span>
             </div>
           </div>
 

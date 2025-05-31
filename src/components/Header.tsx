@@ -6,7 +6,7 @@ import MenuModal from './MenuModal';
 import { useState } from 'react';
 
 interface HeaderProps {
-  user: User;
+  user: User | null;
   onSignOut: () => void;
 }
 
@@ -28,7 +28,10 @@ export default function Header({ user, onSignOut }: HeaderProps) {
           <div className="w-10 rounded-full">
             <img
               alt="User avatar"
-              src={`https://api.dicebear.com/7.x/initials/svg?seed=${user.email}`}
+              src={user?.email 
+                ? `https://api.dicebear.com/7.x/initials/svg?seed=${user.email}`
+                : 'https://api.dicebear.com/7.x/initials/svg?seed=anonymous'
+              }
             />
           </div>
         </button>

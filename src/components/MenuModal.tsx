@@ -20,7 +20,7 @@ export default function MenuModal({ isOpen, onClose, onSignOut }: MenuModalProps
         onClick={(e) => e.stopPropagation()}
       >
         <button
-          className="btn btn-sm btn-circle absolute right-2 top-2 p-2 hover:bg-base-100 hover:text-primary"
+          className="btn btn-ghost btn-sm btn-circle absolute right-2 top-2 p-2 hover:bg-base-100 hover:text-primary"
           onClick={onClose}
           aria-label="Close menu"
         >
@@ -28,22 +28,22 @@ export default function MenuModal({ isOpen, onClose, onSignOut }: MenuModalProps
         </button>
         <nav className="flex flex-col gap-4 mt-8">
           <Link href="/dashboard" onClick={onClose}
-            className="btn btn-lg btn-neutral flex gap-3 px-3 py-2 rounded-lg transition hover:bg-base-100 text-primary text-base font-medium cursor-pointer w-full">
+            className="btn btn-lg btn-ghost text-primary bg-base-200 flex gap-3 px-3 py-2 rounded-lg transition hover:bg-base-100 text-base font-medium cursor-pointer w-full">
             <LayoutDashboard className="w-5 h-5 flex-shrink-0" />
             <span className="text-left">Main</span>
           </Link>
           <Link href="/profile" onClick={onClose}
-            className="btn btn-lg btn-neutral flex items-center gap-3 px-3 py-2 rounded-lg transition hover:bg-base-100 text-info text-base font-medium cursor-pointer w-full">
+            className="btn btn-lg btn-ghost text-info bg-base-200 flex items-center gap-3 px-3 py-2 rounded-lg transition hover:bg-base-100 text-base font-medium cursor-pointer w-full">
             <User className="w-5 h-5 flex-shrink-0" />
             <span className="text-left">Profile</span>
           </Link>
           <Link href="/settings" onClick={onClose}
-            className="btn btn-lg btn-neutral flex items-center gap-3 px-3 py-2 rounded-lg transition hover:bg-base-100 text-secondary text-base font-medium cursor-pointer w-full">
+            className="btn btn-lg btn-ghost text-secondary bg-base-200 flex items-center gap-3 px-3 py-2 rounded-lg transition hover:bg-base-100 text-base font-medium cursor-pointer w-full">
             <Settings className="w-5 h-5 flex-shrink-0" />
             <span className="text-left">Settings</span>
           </Link>
           <button
-            className="btn btn-lg btn-neutral flex items-center gap-3 px-3 py-2 rounded-lg transition hover:bg-base-100 text-error text-base font-medium cursor-pointer w-full"
+            className="btn btn-lg btn-ghost bg-base-200 flex items-center gap-3 px-3 py-2 rounded-lg transition hover:bg-error/10 text-error text-base font-medium cursor-pointer w-full"
             onClick={() => { onClose(); onSignOut(); }}
             type="button"
           >
