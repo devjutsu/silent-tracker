@@ -1,5 +1,14 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Next things:
+[Boilerplate to check with](https://www.ory.sh/blog/enterprise-ready-saas-starter-kit)
+- [ ] Sign in with Google OAuth
+- [ ] Sign in with Facebook 
+- [ ] Webhooks and Events
+- [ ] Audit logs
+- [ ] Internationalization
+
+
 ## DB
 
 ```create table public.pulse (

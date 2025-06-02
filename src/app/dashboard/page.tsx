@@ -106,7 +106,7 @@ export default function Dashboard() {
             <div className="card-body">
               <h2 className="card-title">Focus Check-in</h2>
               <button
-                className="btn btn-lg btn-secondary"
+                className="btn btn-lg btn-info"
                 onClick={() => setIsPulseModalOpen(true)}
               >
                 Record Pulse
@@ -210,14 +210,14 @@ export default function Dashboard() {
         ) : (
           <div className="card bg-base-100 shadow-xl mt-4">
             <div className="card-body">
-              <div className="flex flex-col items-center justify-center py-4 text-center">
+              <div className="flex flex-col items-center justify-center text-center">
                 <div className="text-4xl">📊</div>
                 <h3 className="text-lg font-semibold">No records yet</h3>
-                <p className="text-base-content/70 mb-2">
+                <p className="text-base-content/70 mb-4">
                   Start tracking your focus levels to see your history here.
                 </p>
                 <button
-                  className="btn btn-primary"
+                  className="btn btn-outline btn-info"
                   onClick={() => setIsPulseModalOpen(true)}
                 >
                   Record Your First Pulse
@@ -228,7 +228,7 @@ export default function Dashboard() {
         )}
 
         {(trackingError || authError || pulseError) && (
-          <div className="alert alert-error mt-4">
+          <div className="alert alert-dash alert-error mt-4">
             <span>{trackingError || authError || pulseError}</span>
           </div>
         )}

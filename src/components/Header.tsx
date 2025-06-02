@@ -2,8 +2,7 @@
 
 import Link from 'next/link';
 import { User } from '@supabase/supabase-js';
-import MenuModal from './MenuModal';
-import { useState } from 'react';
+import { useMenuStore } from '@/store/useMenuStore';
 import Image from 'next/image';
 
 interface HeaderProps {
@@ -12,10 +11,11 @@ interface HeaderProps {
 }
 
 export default function Header({ user, onSignOut }: HeaderProps) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const setIsMenuOpen = useMenuStore((state) => state.setIsMenuOpen);
+  
   return (
     <header className="navbar top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-0">
-      <div className="container flex h-14 max-w-screen-2xl items-center">
+      <div className="container flex max-w-screen-2xl items-center">
         <Link href="/" className="flex items-center space-x-2">
           <Image
             src="/logo-192x192.png"
@@ -44,11 +44,6 @@ export default function Header({ user, onSignOut }: HeaderProps) {
             />
           </div>
         </button>
-        <MenuModal
-          isOpen={isMenuOpen}
-          onClose={() => setIsMenuOpen(false)}
-          onSignOut={onSignOut}
-        />
       </div>
     </header>
   );

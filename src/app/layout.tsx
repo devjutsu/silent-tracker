@@ -4,6 +4,8 @@ import './globals.css';
 import { Toaster } from 'react-hot-toast';
 import ThemeProvider from './ThemeProvider';
 import HeaderWrapper from '@/components/HeaderWrapper';
+import MenuModalWrapper from '@/components/layout/MenuModalWrapper';
+
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -61,6 +63,7 @@ export default function RootLayout({
       >
         <ThemeProvider>
           <HeaderWrapper />
+          <MenuModalWrapper />
           {/* <Modal /> */}
           {children}
           {/* <AlertDialog /> */}
@@ -72,3 +75,5 @@ export default function RootLayout({
     </html>
   );
 }
+
+
