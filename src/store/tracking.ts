@@ -97,7 +97,14 @@ export const useTrackingStore = create<TrackingState>((set, get) => ({
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      set({ entries: data });
+      
+      // Find the most recent unfinished entry (where end_time is null)
+      const activeEntry = data.find(entry => entry.end_time === null);
+      
+      set({ 
+        entries: data,
+        currentEntry: activeEntry || null // Restore the active entry if found
+      });
     } catch (error) {
       set({ error: error instanceof Error ? error.message : 'An error occurred' });
     } finally {

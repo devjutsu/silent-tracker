@@ -4,21 +4,30 @@ import Link from 'next/link';
 import { User } from '@supabase/supabase-js';
 import { useMenuStore } from '@/store/useMenuStore';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { createBrowserClient } from '@supabase/ssr';
+import { useThemeStore } from '@/store/theme';
 
 interface HeaderProps {
   user: User | null;
-  onSignOut: () => void;
 }
 
-export default function Header({ user, onSignOut }: HeaderProps) {
+export default function Header({ user }: HeaderProps) {
   const setIsMenuOpen = useMenuStore((state) => state.setIsMenuOpen);
+  const { theme } = useThemeStore();
+  
+  const router = useRouter();
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
   
   return (
-    <header className="navbar top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-0">
+    <header className="navbar top-0 z-50 w-full border-b border-neutral p-0 bg-base-300">
       <div className="container flex max-w-screen-2xl items-center">
         <Link href="/" className="flex items-center space-x-2">
           <Image
-            src="/logo-192x192.png"
+            src={theme === 'emerald' ? '/logo-light-192x192.png' : '/logo-dark-192x192.png'}
             alt="Silent Tracker Logo"
             width={64}
             height={64}

@@ -102,7 +102,7 @@ export default function Settings() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="flex flex-col">
       <main className="flex-1 flex flex-col items-center pt-8">
         <h2 className="text-3xl font-bold mb-8">Settings</h2>
         <div className="flex flex-col gap-8 w-full max-w-2xl">

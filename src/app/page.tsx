@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth';
 import { useTrackingStore } from '@/store/tracking';
 import { usePulseStore } from '@/store/pulse';
@@ -9,13 +8,28 @@ import { useNotificationStore } from '@/store/notifications';
 import Login from '@/components/auth/Login';
 import PulseModal from '@/components/PulseModal';
 import toast from 'react-hot-toast';
+import { CirclePause, CirclePlay, SatelliteDish } from 'lucide-react';
+import FocusTimer from '@/components/FocusTimer';
 
 export default function Home() {
-  const router = useRouter();
   const { user, loading: authLoading, error: authError } = useAuthStore();
-  const { entries, currentEntry, loading: trackingLoading, error: trackingError, fetchEntries, startTracking, stopTracking } = useTrackingStore();
-  const { records: pulseRecords, loading: pulseLoading, error: pulseError, fetchRecords: fetchPulseRecords } = usePulseStore();
-  const { requestPermission, isEnabled, startNotifications } = useNotificationStore();
+  const {
+    entries,
+    currentEntry,
+    loading: trackingLoading,
+    error: trackingError,
+    fetchEntries,
+    startTracking,
+    stopTracking,
+  } = useTrackingStore();
+  const {
+    records: pulseRecords,
+    loading: pulseLoading,
+    error: pulseError,
+    fetchRecords: fetchPulseRecords,
+  } = usePulseStore();
+  const { requestPermission, isEnabled, startNotifications } =
+    useNotificationStore();
   const [isPulseModalOpen, setIsPulseModalOpen] = useState(false);
 
   useEffect(() => {
@@ -63,13 +77,6 @@ export default function Home() {
     }
   };
 
-  const handleTestToast = () => {
-    toast('This is a test notification!', {
-      icon: '👋',
-      duration: 4000,
-    });
-  };
-
   return (
     <div className="min-h-screen bg-base-200">
       <div className="container mx-auto p-4">
@@ -78,47 +85,49 @@ export default function Home() {
             <div className="stat-title">Today Sessions</div>
             <div className="stat-value">{entries.length}</div>
           </div>
+
           <div className="stat">
             <div className="stat-title">Active Session</div>
-            <div className="stat-value">{currentEntry ? 'Yes' : 'No'}</div>
+            {currentEntry ? (<FocusTimer startTime={currentEntry.start_time} />) : ( '-')}
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
           <div className="card bg-base-100 shadow-xl">
             <div className="card-body">
-              <h2 className="card-title">Tracking Controls</h2>
+              <h2 className="card-title">Flow</h2>
               <button
-                className={`btn btn-lg ${currentEntry ? 'btn-error' : 'btn-primary'}`}
+                className={`btn btn-lg ${
+                  currentEntry ? 'btn-error' : 'btn-primary'
+                }`}
                 onClick={handleTracking}
               >
-                {currentEntry ? 'Stop Tracking' : 'Start Tracking'}
+                {currentEntry ? (
+                  <>
+                    <CirclePause />
+                    Stop Focus
+                  </>
+                ) : (
+                  <>
+                    <CirclePlay size={32} />
+                    Focus Flow
+                  </>
+                )}
               </button>
             </div>
           </div>
 
           <div className="card bg-base-100 shadow-xl">
             <div className="card-body">
-              <h2 className="card-title">Focus Check-in</h2>
+              <h2 className="card-title">Check-in</h2>
               <button
                 className="btn btn-lg btn-info"
                 onClick={() => setIsPulseModalOpen(true)}
               >
+                <SatelliteDish />
                 Record Pulse
               </button>
             </div>
-          </div>
-        </div>
-
-        <div className="card bg-base-100 shadow-xl mt-4">
-          <div className="card-body">
-            <h2 className="card-title">Test Notifications</h2>
-            <button
-              className="btn btn-outline"
-              onClick={handleTestToast}
-            >
-              Fire Toast
-            </button>
           </div>
         </div>
 
@@ -143,7 +152,10 @@ export default function Home() {
                       <td>
                         {entry.end_time
                           ? `${Math.round(
-                              (new Date(entry.end_time).getTime() - new Date(entry.start_time).getTime()) / 1000 / 60
+                              (new Date(entry.end_time).getTime() -
+                                new Date(entry.start_time).getTime()) /
+                                1000 /
+                                60
                             )} minutes`
                           : 'In Progress'}
                       </td>
