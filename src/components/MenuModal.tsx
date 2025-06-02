@@ -1,6 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
 import { LayoutDashboard, User, Settings, LogOut } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { useAuthStore } from '@/store/auth';
 
 interface MenuModalProps {
   isOpen: boolean;
@@ -9,7 +11,15 @@ interface MenuModalProps {
 }
 
 export default function MenuModal({ isOpen, onClose, onSignOut }: MenuModalProps) {
+  const { user, loading: authLoading, error: authError, getUser, signOut } = useAuthStore();
+  
   if (!isOpen) return null;
+  async function handleSignOut() {
+    await signOut();
+    onClose();
+    toast.success('Signed out successfully');
+  }
+
   return (
     <div 
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
@@ -27,7 +37,7 @@ export default function MenuModal({ isOpen, onClose, onSignOut }: MenuModalProps
           ✕
         </button>
         <nav className="flex flex-col gap-4 mt-8">
-          <Link href="/dashboard" onClick={onClose}
+          <Link href="/" onClick={onClose}
             className="btn btn-lg btn-ghost text-primary bg-base-200 flex gap-3 px-3 py-2 rounded-lg transition hover:bg-base-100 text-base font-medium cursor-pointer w-full">
             <LayoutDashboard className="w-5 h-5 flex-shrink-0" />
             <span className="text-left">Main</span>
@@ -44,7 +54,7 @@ export default function MenuModal({ isOpen, onClose, onSignOut }: MenuModalProps
           </Link>
           <button
             className="btn btn-lg btn-ghost bg-base-200 flex items-center gap-3 px-3 py-2 rounded-lg transition hover:bg-error/10 text-error text-base font-medium cursor-pointer w-full"
-            onClick={() => { onClose(); onSignOut(); }}
+            onClick={() => { handleSignOut(); }}
             type="button"
           >
             <LogOut className="w-5 h-5 flex-shrink-0" />

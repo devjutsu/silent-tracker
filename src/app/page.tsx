@@ -1,60 +1,47 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth';
-import { supabase } from '@/lib/supabase';
-
-type AuthMode = 'sign-in' | 'sign-up' | 'reset';
+import { useTrackingStore } from '@/store/tracking';
+import { usePulseStore } from '@/store/pulse';
+import { useNotificationStore } from '@/store/notifications';
+import Login from '@/components/auth/Login';
+import PulseModal from '@/components/PulseModal';
+import toast from 'react-hot-toast';
 
 export default function Home() {
   const router = useRouter();
-  const { user, loading, error, signIn, signUp, resetPassword } = useAuthStore();
-  const [mode, setMode] = useState<AuthMode>('sign-in');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [message, setMessage] = useState<{ type: 'error' | 'success'; text: string } | null>(null);
+  const { user, loading: authLoading, error: authError } = useAuthStore();
+  const { entries, currentEntry, loading: trackingLoading, error: trackingError, fetchEntries, startTracking, stopTracking } = useTrackingStore();
+  const { records: pulseRecords, loading: pulseLoading, error: pulseError, fetchRecords: fetchPulseRecords } = usePulseStore();
+  const { requestPermission, isEnabled, startNotifications } = useNotificationStore();
+  const [isPulseModalOpen, setIsPulseModalOpen] = useState(false);
 
   useEffect(() => {
     if (user) {
-      router.push('/dashboard');
-    }
-  }, [user, router]);
+      fetchEntries();
+      fetchPulseRecords();
 
-  const handleAuth = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setMessage(null);
-
-    try {
-      if (mode === 'sign-in') {
-        await signIn(email, password);
-      } else if (mode === 'sign-up') {
-        await signUp(email, password);
-        setMessage({ type: 'success', text: 'Check your email for the confirmation link!' });
-      } else if (mode === 'reset') {
-        await resetPassword(email);
-        setMessage({ type: 'success', text: 'Check your email for the password reset link!' });
+      // Request notification permission on first visit
+      if (!isEnabled) {
+        requestPermission();
       }
-    } catch (error) {
-      setMessage({ type: 'error', text: error instanceof Error ? error.message : 'An error occurred' });
-    }
-  };
 
-  const handleSocialLogin = async (provider: 'google' | 'facebook' | 'apple') => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        },
-      });
-      if (error) throw error;
-    } catch (error) {
-      setMessage({ type: 'error', text: error instanceof Error ? error.message : 'An error occurred' });
-    }
-  };
+      // Listen for notification click events
+      const handleShowPulseModal = () => {
+        setIsPulseModalOpen(true);
+      };
 
-  if (loading) {
+      window.addEventListener('showPulseModal', handleShowPulseModal);
+
+      return () => {
+        window.removeEventListener('showPulseModal', handleShowPulseModal);
+      };
+    }
+  }, [user, fetchEntries, fetchPulseRecords, requestPermission, isEnabled]);
+
+  if (authLoading || trackingLoading || pulseLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <span className="loading loading-spinner loading-lg"></span>
@@ -62,106 +49,190 @@ export default function Home() {
     );
   }
 
+  if (!user) {
+    return <Login />;
+  }
+
+  const handleTracking = async () => {
+    if (currentEntry) {
+      await stopTracking();
+      toast.success('Tracking stopped');
+    } else {
+      await startTracking('New tracking session');
+      toast.success('Tracking started');
+    }
+  };
+
+  const handleTestToast = () => {
+    toast('This is a test notification!', {
+      icon: '👋',
+      duration: 4000,
+    });
+  };
+
   return (
-    <div className="min-h-screen bg-base-200 flex items-center justify-center p-4">
-      <div className="card w-full max-w-md bg-base-100 shadow-xl">
-        <div className="card-body">
-          <h1 className="text-2xl font-bold text-center mb-4">Silent Tracker</h1>
-          
-          {/* Mode Tabs */}
-          <div className="tabs tabs-boxed justify-center mb-4">
-            <button
-              className={`tab ${mode === 'sign-in' ? 'tab-active' : ''}`}
-              onClick={() => setMode('sign-in')}
-            >
-              Sign In
-            </button>
-            <button
-              className={`tab ${mode === 'sign-up' ? 'tab-active' : ''}`}
-              onClick={() => setMode('sign-up')}
-            >
-              Sign Up
-            </button>
-            <button
-              className={`tab ${mode === 'reset' ? 'tab-active' : ''}`}
-              onClick={() => setMode('reset')}
-            >
-              Reset Password
-            </button>
+    <div className="min-h-screen bg-base-200">
+      <div className="container mx-auto p-4">
+        <div className="stats shadow w-full overflow-x-auto">
+          <div className="stat">
+            <div className="stat-title">Today Sessions</div>
+            <div className="stat-value">{entries.length}</div>
+          </div>
+          <div className="stat">
+            <div className="stat-title">Active Session</div>
+            <div className="stat-value">{currentEntry ? 'Yes' : 'No'}</div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div className="card bg-base-100 shadow-xl">
+            <div className="card-body">
+              <h2 className="card-title">Tracking Controls</h2>
+              <button
+                className={`btn btn-lg ${currentEntry ? 'btn-error' : 'btn-primary'}`}
+                onClick={handleTracking}
+              >
+                {currentEntry ? 'Stop Tracking' : 'Start Tracking'}
+              </button>
+            </div>
           </div>
 
-          {/* Auth Form */}
-          <form onSubmit={handleAuth} className="space-y-4">
-            <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text">Email</span>
-              </label>
-              <input
-                type="email"
-                placeholder="email@example.com"
-                className="input input-bordered w-full"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-
-            {mode !== 'reset' && (
-              <div className="form-control w-full">
-                <label className="label">
-                  <span className="label-text">Password</span>
-                </label>
-                <input
-                  type="password"
-                  className="input input-bordered w-full"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </div>
-            )}
-
-            <button type="submit" className="btn btn-primary w-full">
-              {mode === 'sign-in' ? 'Sign In' : mode === 'sign-up' ? 'Sign Up' : 'Reset Password'}
-            </button>
-          </form>
-
-          {/* Social Login */}
-          {mode === 'sign-in' && (
-            <div className="divider">OR</div>
-          )}
-          
-          {mode === 'sign-in' && (
-            <div className="flex flex-col gap-2">
+          <div className="card bg-base-100 shadow-xl">
+            <div className="card-body">
+              <h2 className="card-title">Focus Check-in</h2>
               <button
-                className="btn btn-outline w-full"
-                onClick={() => handleSocialLogin('google')}
+                className="btn btn-lg btn-info"
+                onClick={() => setIsPulseModalOpen(true)}
               >
-                Continue with Google
-              </button>
-              <button
-                className="btn btn-outline w-full"
-                onClick={() => handleSocialLogin('facebook')}
-              >
-                Continue with Facebook
-              </button>
-              <button
-                className="btn btn-outline w-full"
-                onClick={() => handleSocialLogin('apple')}
-              >
-                Continue with Apple
+                Record Pulse
               </button>
             </div>
-          )}
-
-          {/* Messages */}
-          {message && (
-            <div className={`alert ${message.type === 'error' ? 'alert-error' : 'alert-success'} mt-4`}>
-              <span>{message.text}</span>
-            </div>
-          )}
+          </div>
         </div>
+
+        <div className="card bg-base-100 shadow-xl mt-4">
+          <div className="card-body">
+            <h2 className="card-title">Test Notifications</h2>
+            <button
+              className="btn btn-outline"
+              onClick={handleTestToast}
+            >
+              Fire Toast
+            </button>
+          </div>
+        </div>
+
+        <div className="card bg-base-100 shadow-xl mt-4">
+          <div className="card-body">
+            <h2 className="card-title">Recent Activity</h2>
+            <div className="overflow-x-auto">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Duration</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {entries.map((entry) => (
+                    <tr key={entry.id}>
+                      <td>{new Date(entry.start_time).toLocaleString()}</td>
+                      <td>{entry.description}</td>
+                      <td>
+                        {entry.end_time
+                          ? `${Math.round(
+                              (new Date(entry.end_time).getTime() - new Date(entry.start_time).getTime()) / 1000 / 60
+                            )} minutes`
+                          : 'In Progress'}
+                      </td>
+                      <td>
+                        <button className="btn btn-ghost btn-xs">Edit</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        {pulseRecords.length > 0 ? (
+          <div className="card bg-base-100 shadow-xl mt-4">
+            <div className="card-body">
+              <h2 className="card-title">Pulse History</h2>
+              <div className="overflow-x-auto">
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Focus Level</th>
+                      <th>Activity</th>
+                      <th>Tag</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {pulseRecords.map((record) => (
+                      <tr key={record.id}>
+                        <td>{new Date(record.created_at).toLocaleString()}</td>
+                        <td>
+                          <div className="flex items-center gap-2">
+                            <div className="rating rating-sm">
+                              {[1, 2, 3, 4, 5].map((level) => (
+                                <input
+                                  key={level}
+                                  type="radio"
+                                  name={`rating-${record.id}`}
+                                  className="mask mask-star-2 bg-primary"
+                                  checked={level === record.focus_level}
+                                  readOnly
+                                />
+                              ))}
+                            </div>
+                            <span>{record.focus_level}/5</span>
+                          </div>
+                        </td>
+                        <td>{record.activity}</td>
+                        <td>{record.tag || '-'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="card bg-base-100 shadow-xl mt-4">
+            <div className="card-body">
+              <div className="flex flex-col items-center justify-center text-center">
+                <div className="text-4xl">📊</div>
+                <h3 className="text-lg font-semibold">No records yet</h3>
+                <p className="text-base-content/70 mb-4">
+                  Start tracking your focus levels to see your history here.
+                </p>
+                <button
+                  className="btn btn-outline btn-info"
+                  onClick={() => setIsPulseModalOpen(true)}
+                >
+                  Record Your First Pulse
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {(trackingError || authError || pulseError) && (
+          <div className="alert alert-dash alert-error mt-4">
+            <span>{trackingError || authError || pulseError}</span>
+          </div>
+        )}
       </div>
+
+      <PulseModal
+        isOpen={isPulseModalOpen}
+        onClose={() => setIsPulseModalOpen(false)}
+      />
     </div>
   );
 }
