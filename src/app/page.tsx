@@ -88,7 +88,11 @@ export default function Home() {
 
           <div className="stat">
             <div className="stat-title">Active Session</div>
-            {currentEntry ? (<FocusTimer startTime={currentEntry.start_time} />) : ( '-')}
+            {currentEntry ? (
+              <FocusTimer startTime={currentEntry.start_time} />
+            ) : (
+              '-'
+            )}
           </div>
         </div>
 
@@ -98,7 +102,7 @@ export default function Home() {
               <h2 className="card-title">Flow</h2>
               <button
                 className={`btn btn-lg ${
-                  currentEntry ? 'btn-error' : 'btn-primary'
+                  currentEntry ? 'btn-warning' : 'btn-primary'
                 }`}
                 onClick={handleTracking}
               >
@@ -121,7 +125,7 @@ export default function Home() {
             <div className="card-body">
               <h2 className="card-title">Check-in</h2>
               <button
-                className="btn btn-lg btn-info"
+                className="btn btn-lg btn-secondary"
                 onClick={() => setIsPulseModalOpen(true)}
               >
                 <SatelliteDish />
@@ -131,44 +135,46 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="card bg-base-100 shadow-xl mt-4">
-          <div className="card-body">
-            <h2 className="card-title">Recent Activity</h2>
-            <div className="overflow-x-auto">
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Description</th>
-                    <th>Duration</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {entries.map((entry) => (
-                    <tr key={entry.id}>
-                      <td>{new Date(entry.start_time).toLocaleString()}</td>
-                      <td>{entry.description}</td>
-                      <td>
-                        {entry.end_time
-                          ? `${Math.round(
-                              (new Date(entry.end_time).getTime() -
-                                new Date(entry.start_time).getTime()) /
-                                1000 /
-                                60
-                            )} minutes`
-                          : 'In Progress'}
-                      </td>
-                      <td>
-                        <button className="btn btn-ghost btn-xs">Edit</button>
-                      </td>
+        {entries.length > 0 && (
+          <div className="card bg-base-100 shadow-xl mt-4">
+            <div className="card-body">
+              <h2 className="card-title">Recent Activity</h2>
+              <div className="overflow-x-auto">
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Description</th>
+                      <th>Duration</th>
+                      <th>Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {entries.map((entry) => (
+                      <tr key={entry.id}>
+                        <td>{new Date(entry.start_time).toLocaleString()}</td>
+                        <td>{entry.description}</td>
+                        <td>
+                          {entry.end_time
+                            ? `${Math.round(
+                                (new Date(entry.end_time).getTime() -
+                                  new Date(entry.start_time).getTime()) /
+                                  1000 /
+                                  60
+                              )} minutes`
+                            : 'In Progress'}
+                        </td>
+                        <td>
+                          <button className="btn btn-ghost btn-xs">Edit</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {pulseRecords.length > 0 ? (
           <div className="card bg-base-100 shadow-xl mt-4">
@@ -224,7 +230,7 @@ export default function Home() {
                   Start tracking your focus levels to see your history here.
                 </p>
                 <button
-                  className="btn btn-outline btn-info"
+                  className="btn btn-outline btn-secondary"
                   onClick={() => setIsPulseModalOpen(true)}
                 >
                   Record Your First Pulse
