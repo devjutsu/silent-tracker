@@ -6,7 +6,6 @@ import { useAuthStore } from '@/store/auth';
 import { useTrackingStore } from '@/store/tracking';
 import { usePulseStore } from '@/store/pulse';
 import { useNotificationStore } from '@/store/notifications';
-import Header from '@/components/Header';
 import PulseModal from '@/components/PulseModal';
 import toast from 'react-hot-toast';
 
@@ -78,8 +77,6 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-base-200">
-      <Header user={user} onSignOut={handleSignOut} />
-
       <div className="container mx-auto p-4">
         <div className="stats shadow w-full overflow-x-auto">
           <div className="stat">

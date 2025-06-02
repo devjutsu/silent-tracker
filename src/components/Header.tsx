@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { User } from '@supabase/supabase-js';
 import MenuModal from './MenuModal';
 import { useState } from 'react';
+import Image from 'next/image';
 
 interface HeaderProps {
   user: User | null;
@@ -13,10 +14,18 @@ interface HeaderProps {
 export default function Header({ user, onSignOut }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   return (
-    <div className="navbar bg-base-100 shadow-lg px-4">
-      <div className="flex-1">
-        <Link href="/dashboard" className="btn btn-ghost text-xl">
-          Silent Tracker
+    <header className="navbar top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-0">
+      <div className="container flex h-14 max-w-screen-2xl items-center">
+        <Link href="/" className="flex items-center space-x-2">
+          <Image
+            src="/logo-192x192.png"
+            alt="Silent Tracker Logo"
+            width={64}
+            height={64}
+            className="rounded-md"
+            priority
+          />
+          <span className="font-bold">Silent Tracker</span>
         </Link>
       </div>
       <div className="flex-none gap-2">
@@ -41,6 +50,6 @@ export default function Header({ user, onSignOut }: HeaderProps) {
           onSignOut={onSignOut}
         />
       </div>
-    </div>
+    </header>
   );
 } 

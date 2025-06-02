@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth';
 import { useNotificationStore } from '@/store/notifications';
 import { useThemeStore } from '@/store/theme';
-import Header from '@/components/Header';
 import toast from 'react-hot-toast';
 
 export default function Settings() {
@@ -90,7 +89,6 @@ export default function Settings() {
   if (authLoading) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Header user={user!} onSignOut={handleSignOut} />
         <main className="flex-1 flex flex-col items-center justify-center py-8">
           <span className="loading loading-spinner loading-lg"></span>
         </main>
@@ -105,7 +103,6 @@ export default function Settings() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header user={user} onSignOut={handleSignOut} />
       <main className="flex-1 flex flex-col items-center pt-8">
         <h2 className="text-3xl font-bold mb-8">Settings</h2>
         <div className="flex flex-col gap-8 w-full max-w-2xl">

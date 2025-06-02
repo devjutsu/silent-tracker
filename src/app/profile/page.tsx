@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth';
-import Header from '@/components/Header';
 import toast from 'react-hot-toast';
 import React from 'react';
 
@@ -41,7 +40,6 @@ export default function Profile() {
   if (authLoading) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Header user={user!} onSignOut={() => {}} />
         <main className="flex-1 flex flex-col items-center pt-8">
           <span className="loading loading-spinner loading-lg"></span>
         </main>
@@ -56,7 +54,6 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header user={user} onSignOut={() => {}} />
       <main className="flex-1 flex flex-col items-center pt-8">
         <h2 className="text-3xl font-bold mb-8">Profile</h2>
         <div className="flex flex-col gap-8 w-full max-w-2xl">
