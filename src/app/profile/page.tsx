@@ -20,9 +20,6 @@ export default function Profile() {
   } = useAuthStore();
   const [displayName, setDisplayName] = useState('');
   const [newPassword, setNewPassword] = useState('');
-  const [newAvatar, setNewAvatar] = useState<string | null>(null);
-  const [showAvatarActions, setShowAvatarActions] = useState(false);
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const init = async () => {
@@ -32,7 +29,7 @@ export default function Profile() {
           setDisplayName(user.user_metadata.full_name);
         }
       } catch (error) {
-        toast.error('Failed to load profile');
+        toast.error(`Failed to load profile: ${error}`);
       }
     };
     init();
@@ -97,7 +94,7 @@ export default function Profile() {
         <h2 className="text-3xl font-bold mb-8">Profile</h2>
         <div className="flex flex-col gap-8 w-full max-w-2xl">
           <div className="card bg-base-100 shadow-xl p-6 rounded-box flex flex-col items-center">
-            <AvatarEditor email={user.email} onAvatarChange={setNewAvatar} />
+            <AvatarEditor email={user.email} />
             <ProfileInfoCard
               name={displayName}
               email={user.email}

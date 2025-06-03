@@ -1,5 +1,7 @@
+import { TrackingEntry } from '@/types/tracking';
+
 interface RecentActivityProps {
-  entries: any[];
+  entries: TrackingEntry[];
 }
 
 export default function RecentActivity({ entries }: RecentActivityProps) {

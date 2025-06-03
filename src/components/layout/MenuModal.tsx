@@ -10,8 +10,8 @@ interface MenuModalProps {
   onSignOut: () => void;
 }
 
-export default function MenuModal({ isOpen, onClose, onSignOut }: MenuModalProps) {
-  const { loading: authLoading, error: authError, signOut } = useAuthStore();
+export default function MenuModal({ isOpen, onClose }: MenuModalProps) {
+  const { signOut } = useAuthStore();
   
   if (!isOpen) return null;
   async function handleSignOut() {

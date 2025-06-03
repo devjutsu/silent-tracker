@@ -1,8 +1,9 @@
 import FocusTimer from './FocusTimer';
+import { TrackingEntry } from '@/types/tracking';
 
 interface StatsSectionProps {
-  entries: any[];
-  currentEntry: any | null;
+  entries: TrackingEntry[];
+  currentEntry: TrackingEntry | null;
 }
 
 export default function StatsSection({ entries, currentEntry }: StatsSectionProps) {

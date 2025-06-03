@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 
 type Props = {
   email?: string;
-  onAvatarChange: (dataUrl: string | null) => void;
+  onAvatarChange?: (dataUrl: string | null) => void;
 };
 
 export default function AvatarEditor({ email, onAvatarChange }: Props) {
@@ -19,12 +19,13 @@ export default function AvatarEditor({ email, onAvatarChange }: Props) {
       reader.onload = (ev) => {
         const result = ev.target?.result as string;
         setPreview(result);
-        onAvatarChange(result);
+        onAvatarChange?.(result);
       };
       reader.readAsDataURL(file);
     }
   };
 
+  /* eslint-disable @next/next/no-img-element */
   return (
     <div className="relative">
       <img
@@ -60,7 +61,7 @@ export default function AvatarEditor({ email, onAvatarChange }: Props) {
             type="button"
             onClick={() => {
               setPreview(null);
-              onAvatarChange(null);
+              onAvatarChange?.(null);
             }}
           >
             Cancel
