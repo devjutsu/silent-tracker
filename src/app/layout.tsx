@@ -4,7 +4,7 @@ import './globals.css';
 import { Toaster } from 'react-hot-toast';
 import ThemeProvider from './ThemeProvider';
 import MenuModalWrapper from '@/components/layout/MenuModalWrapper';
-import Header from '@/components/Header';
+import Header from '@/components/layout/Header';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',

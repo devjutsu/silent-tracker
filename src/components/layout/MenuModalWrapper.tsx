@@ -1,5 +1,5 @@
 'use client';
-import MenuModal from '@/components/MenuModal';
+import MenuModal from '@/components/layout/MenuModal';
 import { useMenuStore } from '@/store/useMenuStore';
 
 export default function MenuModalWrapper() {
