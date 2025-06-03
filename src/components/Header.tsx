@@ -4,17 +4,19 @@ import Link from 'next/link';
 import { User } from '@supabase/supabase-js';
 import { useMenuStore } from '@/store/useMenuStore';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { createBrowserClient } from '@supabase/ssr';
 import { useThemeStore } from '@/store/theme';
+import { useAuthStore } from '@/store/auth';
 
-interface HeaderProps {
-  user: User | null;
-}
-
-export default function Header({ user }: HeaderProps) {
+export default function Header() {
   const setIsMenuOpen = useMenuStore((state) => state.setIsMenuOpen);
   const { theme } = useThemeStore();
+
+  const {
+    user,
+    loading: authLoading,
+    error: authError,
+    getUser,
+  } = useAuthStore();
   
   return (
     <header className="navbar top-0 z-50 w-full border-b border-neutral p-0 bg-base-300">
