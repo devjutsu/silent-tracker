@@ -70,10 +70,10 @@ export default function Home() {
   const handleTracking = async () => {
     if (currentEntry) {
       await stopTracking();
-      toast.success('Tracking stopped');
+      toast('Tracking stopped');
     } else {
       await startTracking('New tracking session');
-      toast.success('Tracking started');
+      toast('Tracking started');
     }
   };
 

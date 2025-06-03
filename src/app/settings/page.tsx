@@ -9,14 +9,20 @@ import toast from 'react-hot-toast';
 
 export default function Settings() {
   const router = useRouter();
-  const { user, loading: authLoading, error: authError, getUser, signOut } = useAuthStore();
-  const { 
-    permission, 
-    isEnabled, 
+  const {
+    user,
+    loading: authLoading,
+    error: authError,
+    getUser,
+    signOut,
+  } = useAuthStore();
+  const {
+    permission,
+    isEnabled,
     notificationInterval,
-    requestPermission, 
-    startNotifications, 
-    stopNotifications, 
+    requestPermission,
+    startNotifications,
+    stopNotifications,
     setIsEnabled,
     setNotificationInterval,
   } = useNotificationStore();
@@ -50,7 +56,7 @@ export default function Settings() {
       if (isEnabled) {
         setIsEnabled(false);
         stopNotifications();
-        toast.success('Notifications disabled');
+        toast('Notifications disabled');
       } else {
         if (permission === 'granted') {
           setIsEnabled(true);
@@ -111,12 +117,15 @@ export default function Settings() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
               <div className="space-y-2 md:col-span-2">
                 <p className="text-base-content/70">
-                  Status: <span className="font-medium">{getNotificationStatus()}</span>
+                  Status:{' '}
+                  <span className="font-medium">{getNotificationStatus()}</span>
                 </p>
                 {isEnabled && permission === 'granted' && (
                   <div className="form-control max-w-xs">
                     <label className="label">
-                      <span className="label-text">Notification Interval (seconds)</span>
+                      <span className="label-text">
+                        Notification Interval (seconds)
+                      </span>
                     </label>
                     <input
                       type="number"
@@ -136,7 +145,9 @@ export default function Settings() {
               </div>
               <div className="flex md:justify-end">
                 <button
-                  className={`btn btn-sm ${isEnabled ? 'btn-neutral' : 'btn-primary'} w-full md:w-auto`}
+                  className={`btn btn-sm ${
+                    isEnabled ? 'btn-neutral' : 'btn-primary'
+                  } w-full md:w-auto`}
                   onClick={handleNotificationToggle}
                   disabled={permission === 'denied'}
                 >
@@ -168,7 +179,9 @@ export default function Settings() {
                 <span className="font-medium break-all">{user.email}</span>
               </div>
               <div className="flex flex-col gap-1">
-                <span className="text-sm text-base-content/70">Last Sign In</span>
+                <span className="text-sm text-base-content/70">
+                  Last Sign In
+                </span>
                 <span className="font-medium">
                   {new Date(user.last_sign_in_at || '').toLocaleString()}
                 </span>
@@ -188,4 +201,4 @@ export default function Settings() {
       </main>
     </div>
   );
-} 
+}

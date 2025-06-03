@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import toast from 'react-hot-toast';
 
 export const DARK_THEME = 'abyss';
@@ -12,15 +12,27 @@ interface ThemeState {
   toggleTheme: () => void;
 }
 
+const getThemeFromStorage = (): Theme => {
+  if (typeof window === 'undefined') return DARK_THEME;
+  const savedTheme = localStorage.getItem('theme-storage');
+  if (!savedTheme) return DARK_THEME;
+  
+  try {
+    const { state } = JSON.parse(savedTheme);
+    return state.theme === 'dark' ? DARK_THEME : LIGHT_THEME;
+  } catch {
+    return DARK_THEME;
+  }
+};
+
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set) => ({
-      theme: DARK_THEME,
+      theme: getThemeFromStorage(),
       setTheme: (theme) => {
         set({ theme });
         if (typeof window !== 'undefined') {
           document.documentElement.setAttribute('data-theme', theme);
-          toast.success(`Switched to ${theme === DARK_THEME ? 'dark' : 'light'} theme`);
         }
       },
       toggleTheme: () => {
@@ -28,7 +40,7 @@ export const useThemeStore = create<ThemeState>()(
           const newTheme = state.theme === DARK_THEME ? LIGHT_THEME : DARK_THEME;
           if (typeof window !== 'undefined') {
             document.documentElement.setAttribute('data-theme', newTheme);
-            toast.success(`Switched to ${newTheme === DARK_THEME ? 'dark' : 'light'} theme`);
+            toast.success(`Using ${newTheme === DARK_THEME ? 'dark' : 'light'} theme`);
           }
           return { theme: newTheme };
         });
@@ -36,6 +48,37 @@ export const useThemeStore = create<ThemeState>()(
     }),
     {
       name: 'theme-storage',
+      storage: createJSONStorage(() => ({
+        getItem: (name) => {
+          const str = localStorage.getItem(name);
+          if (!str) return null;
+          try {
+            const { state } = JSON.parse(str);
+            return JSON.stringify({
+              state: {
+                theme: state.theme === 'dark' ? DARK_THEME : LIGHT_THEME
+              },
+              version: 0
+            });
+          } catch {
+            return null;
+          }
+        },
+        setItem: (name, value) => {
+          try {
+            const { state } = JSON.parse(value as string);
+            localStorage.setItem(name, JSON.stringify({
+              state: {
+                theme: state.theme === DARK_THEME ? 'dark' : 'light'
+              },
+              version: 0
+            }));
+          } catch (error) {
+            console.error('Error saving theme to localStorage:', error);
+          }
+        },
+        removeItem: (name) => localStorage.removeItem(name),
+      })),
     }
   )
 ); 

@@ -12,7 +12,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 ### Micro things:
 - [x] dashboard in '/' page
 - [x] fix user in Header
-- [ ] Toast to use Theme
+- [x] Toast to use Theme
 - [ ] Theme switch between Dark/Light instead of names
 - [ ] Change default avatar outlook
 - [ ] Ticking timer

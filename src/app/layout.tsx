@@ -6,7 +6,6 @@ import ThemeProvider from './ThemeProvider';
 import MenuModalWrapper from '@/components/layout/MenuModalWrapper';
 import Header from '@/components/Header';
 
-
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
@@ -52,8 +51,18 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="icon" href="/favicon/favicon.ico" sizes="any" />
-        <link rel="icon" href="/favicon/favicon-16x16.png" sizes="16x16" type="image/png" />
-        <link rel="icon" href="/favicon/favicon-32x32.png" sizes="32x32" type="image/png" />
+        <link
+          rel="icon"
+          href="/favicon/favicon-16x16.png"
+          sizes="16x16"
+          type="image/png"
+        />
+        <link
+          rel="icon"
+          href="/favicon/favicon-32x32.png"
+          sizes="32x32"
+          type="image/png"
+        />
         <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" />
         <link rel="manifest" href="/favicon/site.webmanifest" />
         <meta name="theme-color" content="#ffffff" />
@@ -73,7 +82,7 @@ export default function RootLayout({
             position="bottom-center"
             toastOptions={{
               style: {
-                background: 'var(--color-base-100)',
+                background: 'var(--color-base-200)',
                 color: 'var(--color-base-content)',
               },
               success: {
@@ -113,5 +122,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-
