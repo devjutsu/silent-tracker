@@ -11,7 +11,7 @@ interface MenuModalProps {
 }
 
 export default function MenuModal({ isOpen, onClose, onSignOut }: MenuModalProps) {
-  const { user, loading: authLoading, error: authError, getUser, signOut } = useAuthStore();
+  const { loading: authLoading, error: authError, signOut } = useAuthStore();
   
   if (!isOpen) return null;
   async function handleSignOut() {

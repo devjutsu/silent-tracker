@@ -42,7 +42,7 @@ export default function PulseModal({ isOpen, onClose }: PulseModalProps) {
       toast.success('Pulse record added successfully');
       onClose();
     } catch (error) {
-      toast.error('Failed to add pulse record');
+      toast.error(`Failed to add pulse record ${error}`);
     }
   };
 

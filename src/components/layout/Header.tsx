@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { User } from '@supabase/supabase-js';
 import { useMenuStore } from '@/store/useMenuStore';
 import Image from 'next/image';
 import { useThemeStore } from '@/store/theme';
@@ -11,19 +10,18 @@ export default function Header() {
   const setIsMenuOpen = useMenuStore((state) => state.setIsMenuOpen);
   const { theme } = useThemeStore();
 
-  const {
-    user,
-    loading: authLoading,
-    error: authError,
-    getUser,
-  } = useAuthStore();
-  
+  const { user } = useAuthStore();
+  /* eslint-disable @next/next/no-img-element */
   return (
     <header className="navbar top-0 z-50 w-full border-b border-neutral p-0 bg-base-300">
       <div className="container flex max-w-screen-2xl items-center">
         <Link href="/" className="flex items-center space-x-2">
           <Image
-            src={theme === 'emerald' ? '/logo-light-192x192.png' : '/logo-dark-192x192.png'}
+            src={
+              theme === 'emerald'
+                ? '/logo-light-192x192.png'
+                : '/logo-dark-192x192.png'
+            }
             alt="Silent Tracker Logo"
             width={64}
             height={64}
@@ -42,14 +40,16 @@ export default function Header() {
           <div className="w-10 rounded-full">
             <img
               alt="User avatar"
-              src={user?.email 
-                ? `https://api.dicebear.com/9.x/glass/svg?seed=${user.email}`
-                : 'https://api.dicebear.com/9.x/glass/svg?seed=anonymous'
+              src={
+                user?.email
+                  ? `https://api.dicebear.com/9.x/glass/svg?seed=${user.email}`
+                  : 'https://api.dicebear.com/9.x/glass/svg?seed=anonymous'
               }
+              className="w-10 h-10 rounded-full"
             />
           </div>
         </button>
       </div>
     </header>
   );
-} 
+}

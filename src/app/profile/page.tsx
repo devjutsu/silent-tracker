@@ -19,8 +19,6 @@ export default function Profile() {
     getUser,
   } = useAuthStore();
   const [displayName, setDisplayName] = useState('');
-  const [updatingName, setUpdatingName] = useState(false);
-  const [updatingPassword, setUpdatingPassword] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [newAvatar, setNewAvatar] = useState<string | null>(null);
   const [showAvatarActions, setShowAvatarActions] = useState(false);
@@ -50,9 +48,6 @@ export default function Profile() {
     }
 
     try {
-      setUpdatingName(true);
-      setUpdatingPassword(true);
-
       // Update user metadata (display name)
       if (displayName !== (user.user_metadata?.full_name || '')) {
         const { error: updateError } = await supabase.auth.updateUser({
@@ -78,9 +73,6 @@ export default function Profile() {
       toast.error(
         error instanceof Error ? error.message : 'Failed to update profile'
       );
-    } finally {
-      setUpdatingName(false);
-      setUpdatingPassword(false);
     }
   };
 

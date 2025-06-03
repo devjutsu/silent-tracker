@@ -33,8 +33,7 @@ export default function Home() {
     fetchRecords: fetchPulseRecords,
     purgeRecords,
   } = usePulseStore();
-  const { requestPermission, isEnabled, startNotifications } =
-    useNotificationStore();
+  const { requestPermission, isEnabled } = useNotificationStore();
   const [isPulseModalOpen, setIsPulseModalOpen] = useState(false);
 
   useEffect(() => {

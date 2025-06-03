@@ -1,5 +1,7 @@
-interface PulseHistoryProps {
-  records: any[];
+import { PulseRecord } from '@/types/pulse';
+
+export interface PulseHistoryProps {
+  records: PulseRecord[];
   onRecordClick: () => void;
 }
 

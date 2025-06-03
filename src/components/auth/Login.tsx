@@ -1,15 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth';
 import { supabase } from '@/lib/supabase';
 
 type AuthMode = 'sign-in' | 'sign-up' | 'reset';
 
 export default function Login() {
-  const router = useRouter();
-  const { user, loading, error, signIn, signUp, resetPassword } = useAuthStore();
+  const { loading, signIn, signUp, resetPassword } = useAuthStore();
   const [mode, setMode] = useState<AuthMode>('sign-in');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

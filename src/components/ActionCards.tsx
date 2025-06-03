@@ -1,7 +1,8 @@
 import { CirclePause, CirclePlay, SatelliteDish } from 'lucide-react';
+import { TrackingEntry } from '@/types/tracking';
 
 interface ActionCardsProps {
-  currentEntry: any | null;
+  currentEntry: TrackingEntry | null;
   onTrackingClick: () => void;
   onPulseClick: () => void;
 }
