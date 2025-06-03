@@ -11,12 +11,13 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ### Micro things:
 - [x] dashboard in '/' page
-- [ ] fix user in Header
+- [x] fix user in Header
 - [ ] Toast to use Theme
 - [ ] Theme switch between Dark/Light instead of names
 - [ ] Change default avatar outlook
 - [ ] Ticking timer
 - [ ] Tracking state to fetch from DB
+- [ ] Add focus flow convenient edit/del
 
 ## DB
 ### Pulse

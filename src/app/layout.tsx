@@ -62,14 +62,52 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider>
-          <Header user={null} />
+          <Header />
           <MenuModalWrapper />
           {/* <Modal /> */}
           {children}
           {/* <AlertDialog /> */}
           {/* <ConfirmDialog /> */}
           {/* <PromptDialog /> */}
-          <Toaster position="bottom-center" />
+          <Toaster
+            position="bottom-center"
+            toastOptions={{
+              style: {
+                background: 'var(--color-base-100)',
+                color: 'var(--color-base-content)',
+              },
+              success: {
+                style: {
+                  background: 'var(--color-success)',
+                  color: 'var(--color-success-content)',
+                },
+                iconTheme: {
+                  primary: 'var(--color-success-content)',
+                  secondary: 'var(--color-success)',
+                },
+              },
+              error: {
+                style: {
+                  background: 'var(--color-error)',
+                  color: 'var(--color-error-content)',
+                },
+                iconTheme: {
+                  primary: 'var(--color-error-content)',
+                  secondary: 'var(--color-error)',
+                },
+              },
+              loading: {
+                style: {
+                  background: 'var(--color-info)',
+                  color: 'var(--color-info-content)',
+                },
+                iconTheme: {
+                  primary: 'var(--color-info-content)',
+                  secondary: 'var(--color-info)',
+                },
+              },
+            }}
+          />
         </ThemeProvider>
       </body>
     </html>
