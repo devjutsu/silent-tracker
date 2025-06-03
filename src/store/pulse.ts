@@ -20,6 +20,7 @@ interface PulseState {
   addRecord: (focusLevel: number, activity: string, tag?: string) => Promise<void>;
   fetchRecords: () => Promise<void>;
   deleteRecord: (id: string) => Promise<void>;
+  purgeRecords: () => Promise<void>;
 }
 
 export const usePulseStore = create<PulseState>((set, get) => ({
@@ -87,6 +88,26 @@ export const usePulseStore = create<PulseState>((set, get) => ({
 
       if (error) throw error;
       await get().fetchRecords();
+    } catch (error) {
+      set({ error: error instanceof Error ? error.message : 'An error occurred' });
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  purgeRecords: async () => {
+    try {
+      set({ loading: true, error: null });
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('User not authenticated');
+
+      const { error } = await supabase
+        .from('pulse')
+        .delete()
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+      set({ records: [] });
     } catch (error) {
       set({ error: error instanceof Error ? error.message : 'An error occurred' });
     } finally {

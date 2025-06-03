@@ -23,6 +23,7 @@ interface TrackingState {
   stopTracking: () => Promise<void>;
   fetchEntries: () => Promise<void>;
   deleteEntry: (id: string) => Promise<void>;
+  purgeEntries: () => Promise<void>;
 }
 
 export const useTrackingStore = create<TrackingState>((set, get) => ({
@@ -122,6 +123,26 @@ export const useTrackingStore = create<TrackingState>((set, get) => ({
 
       if (error) throw error;
       await get().fetchEntries();
+    } catch (error) {
+      set({ error: error instanceof Error ? error.message : 'An error occurred' });
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  purgeEntries: async () => {
+    try {
+      set({ loading: true, error: null });
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('User not authenticated');
+
+      const { error } = await supabase
+        .from('tracking_entries')
+        .delete()
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+      set({ entries: [], currentEntry: null });
     } catch (error) {
       set({ error: error instanceof Error ? error.message : 'An error occurred' });
     } finally {

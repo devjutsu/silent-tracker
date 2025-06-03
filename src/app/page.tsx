@@ -21,12 +21,14 @@ export default function Home() {
     fetchEntries,
     startTracking,
     stopTracking,
+    purgeEntries,
   } = useTrackingStore();
   const {
     records: pulseRecords,
     loading: pulseLoading,
     error: pulseError,
     fetchRecords: fetchPulseRecords,
+    purgeRecords,
   } = usePulseStore();
   const { requestPermission, isEnabled, startNotifications } =
     useNotificationStore();
@@ -245,6 +247,20 @@ export default function Home() {
             <span>{trackingError || authError || pulseError}</span>
           </div>
         )}
+
+        <div className="mt-8 flex justify-center">
+          <button
+            className="btn btn-error btn-outline"
+            onClick={async () => {
+              if (window.confirm('Are you sure you want to delete all your focus flow items and pulse records? This action cannot be undone.')) {
+                await Promise.all([purgeEntries(), purgeRecords()]);
+                toast.success('All data has been purged');
+              }
+            }}
+          >
+            Purge Data
+          </button>
+        </div>
       </div>
 
       <PulseModal
