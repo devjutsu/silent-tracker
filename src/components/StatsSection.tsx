@@ -1,5 +1,5 @@
-import FocusTimer from './FocusTimer';
-import { TrackingEntry } from '@/types/tracking';
+import FocusTimer from '../features/flow/FocusTimer';
+import { TrackingEntry } from '@/features/flow/tracking';
 
 interface StatsSectionProps {
   entries: TrackingEntry[];

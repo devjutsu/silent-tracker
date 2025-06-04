@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { usePulseStore } from '@/store/pulse';
-import { useNotificationStore } from '@/store/notifications';
+import { usePulseStore } from '@/features/pulse/pulse';
+import { useNotificationStore } from '@/features/notifications/notifications';
 import toast from 'react-hot-toast';
 
 type ActivityType = 'work' | 'study' | 'rest' | 'procrastination' | 'fitness';

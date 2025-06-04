@@ -2,9 +2,9 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/store/auth';
-import { useNotificationStore } from '@/store/notifications';
-import { useThemeStore } from '@/store/theme';
+import { useAuthStore } from '@/features/auth/auth';
+import { useNotificationStore } from '@/features/notifications/notifications';
+import { useThemeStore } from '@/features/theme/theme';
 import toast from 'react-hot-toast';
 
 export default function Settings() {

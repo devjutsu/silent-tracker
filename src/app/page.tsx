@@ -1,12 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useAuthStore } from '@/store/auth';
-import { useTrackingStore } from '@/store/tracking';
-import { usePulseStore } from '@/store/pulse';
-import { useNotificationStore } from '@/store/notifications';
-import Login from '@/components/auth/Login';
-import PulseModal from '@/components/PulseModal';
+import { useAuthStore } from '@/features/auth/auth';
+import { useTrackingStore } from '@/features/flow/tracking';
+import { usePulseStore } from '@/features/pulse/pulse';
+import { useNotificationStore } from '@/features/notifications/notifications';
+import Login from '@/features/auth/Login';
+import PulseModal from '@/features/pulse/PulseModal';
 import toast from 'react-hot-toast';
 import StatsSection from '@/components/StatsSection';
 import ActionCards from '@/components/ActionCards';

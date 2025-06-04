@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 import { supabase } from '@/lib/supabase';
 
-interface TrackingEntry {
+
+export interface TrackingEntry {
   id: string;
   user_id: string;
   start_time: string;

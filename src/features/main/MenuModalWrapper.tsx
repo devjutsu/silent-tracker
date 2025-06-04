@@ -1,6 +1,6 @@
 'use client';
-import MenuModal from '@/components/layout/MenuModal';
-import { useMenuStore } from '@/store/useMenuStore';
+import MenuModal from '@/features/menu/MenuModal';
+import { useMenuStore } from '@/features/menu/useMenuStore';
 
 export default function MenuModalWrapper() {
     const isMenuOpen = useMenuStore((state) => state.isMenuOpen);

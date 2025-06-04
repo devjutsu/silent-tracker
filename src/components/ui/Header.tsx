@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { useMenuStore } from '@/store/useMenuStore';
-import { LIGHT_THEME, useThemeStore } from '@/store/theme';
-import { useAuthStore } from '@/store/auth';
+import { useMenuStore } from '@/features/menu/useMenuStore';
+import { LIGHT_THEME, useThemeStore } from '@/features/theme/theme';
+import { useAuthStore } from '@/features/auth/auth';
 
 export default function Header() {
   const setIsMenuOpen = useMenuStore((state) => state.setIsMenuOpen);

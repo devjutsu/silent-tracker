@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useAuthStore } from '@/store/auth';
+import { useAuthStore } from '@/features/auth/auth';
 import { supabase } from '@/lib/supabase';
 
 type AuthMode = 'sign-in' | 'sign-up' | 'reset';

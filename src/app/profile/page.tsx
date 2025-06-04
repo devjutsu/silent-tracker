@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/store/auth';
+import { useAuthStore } from '@/features/auth/auth';
 import toast from 'react-hot-toast';
 import React from 'react';
 import { supabase } from '@/lib/supabase';

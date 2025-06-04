@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { LayoutDashboard, User, Settings, LogOut } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { useAuthStore } from '@/store/auth';
+import { useAuthStore } from '@/features/auth/auth';
 
 interface MenuModalProps {
   isOpen: boolean;
