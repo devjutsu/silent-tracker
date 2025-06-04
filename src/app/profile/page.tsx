@@ -6,9 +6,9 @@ import { useAuthStore } from '@/features/auth/auth';
 import toast from 'react-hot-toast';
 import React from 'react';
 import { supabase } from '@/lib/supabase';
-import AvatarEditor from './components/AvatarEditor';
-import ProfileInfoCard from './components/ProfileInfoCard';
-import ProfileUpdateForm from './components/ProfileUpdateForm';
+import AvatarEditor from '../../features/profile/AvatarEditor';
+import ProfileInfoCard from '../../features/profile/ProfileInfoCard';
+import ProfileUpdateForm from '../../features/profile/ProfileUpdateForm';
 
 export default function Profile() {
   const router = useRouter();

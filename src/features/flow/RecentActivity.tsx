@@ -1,4 +1,4 @@
-import { TrackingEntry } from '@/types/tracking';
+import { TrackingEntry } from '@/features/flow/tracking';
 
 interface RecentActivityProps {
   entries: TrackingEntry[];

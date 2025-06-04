@@ -1,4 +1,4 @@
-import { PulseRecord } from '@/types/pulse';
+import { PulseRecord } from '@/features/pulse/pulse';
 
 export interface PulseHistoryProps {
   records: PulseRecord[];

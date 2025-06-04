@@ -8,11 +8,12 @@ import { useNotificationStore } from '@/features/notifications/notifications';
 import Login from '@/features/auth/Login';
 import PulseModal from '@/features/pulse/PulseModal';
 import toast from 'react-hot-toast';
-import StatsSection from '@/components/StatsSection';
 import ActionCards from '@/components/ActionCards';
-import RecentActivity from '@/components/RecentActivity';
-import PulseHistory from '@/components/PulseHistory';
+import RecentActivity from '@/features/flow/RecentActivity';
+import PulseHistory from '@/features/pulse/PulseHistory';
 import PurgeButton from '@/components/PurgeButton';
+import TodayFlow from '@/features/flow/TodayFlow';
+import ActiveSession from '@/features/flow/ActiveSession';
 
 export default function Home() {
   const { user, loading: authLoading, error: authError } = useAuthStore();
@@ -89,7 +90,10 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-base-200">
       <div className="container mx-auto p-4">
-        <StatsSection entries={entries} currentEntry={currentEntry} />
+        <div className="stats shadow w-full overflow-x-auto">
+          <TodayFlow entries={entries} />
+          <ActiveSession currentEntry={currentEntry} />
+        </div>
 
         <ActionCards
           currentEntry={currentEntry}
