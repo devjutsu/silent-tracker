@@ -2,8 +2,7 @@
 
 import Link from 'next/link';
 import { useMenuStore } from '@/store/useMenuStore';
-import Image from 'next/image';
-import { useThemeStore } from '@/store/theme';
+import { LIGHT_THEME, useThemeStore } from '@/store/theme';
 import { useAuthStore } from '@/store/auth';
 
 export default function Header() {
@@ -16,9 +15,9 @@ export default function Header() {
     <header className="navbar top-0 z-50 w-full border-b border-neutral p-0 bg-base-300">
       <div className="container flex max-w-screen-2xl items-center">
         <Link href="/" className="flex items-center space-x-2">
-          <Image
+          <img
             src={
-              theme === 'emerald'
+              theme === LIGHT_THEME
                 ? '/logo-light-192x192.png'
                 : '/logo-dark-192x192.png'
             }
@@ -26,7 +25,6 @@ export default function Header() {
             width={64}
             height={64}
             className="rounded-md"
-            priority
           />
           <span className="font-bold text-secondary">Silent Tracker</span>
         </Link>
