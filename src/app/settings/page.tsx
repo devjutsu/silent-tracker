@@ -13,7 +13,10 @@ export default function Settings() {
   const { user, loading: authLoading, error: authError, signOut } = useAuthStore();
   const { theme, toggleTheme } = useThemeStore();
   const { isEnabled, permission, requestPermission, notificationInterval, setNotificationInterval } = useNotificationStore();
-  const { isCaloryTrackerEnabled, setCaloryTrackerEnabled } = useFeatureFlags();
+  const { 
+    isKeepFitEnabled,
+    setKeepFitEnabled
+  } = useFeatureFlags();
   const [notificationIntervalInput, setNotificationIntervalInput] = useState(notificationInterval);
 
   useEffect(() => {
@@ -84,16 +87,16 @@ export default function Settings() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="font-medium">Calorie Tracker</h4>
+                  <h4 className="font-medium">Keep Fit</h4>
                   <p className="text-sm text-base-content/70">
-                    Track your daily calorie intake and set goals
+                    Enable or disable all health tracking widgets: Calorie, Hydration, and Fit trackers
                   </p>
                 </div>
                 <input
                   type="checkbox"
-                  className="toggle toggle-primary"
-                  checked={isCaloryTrackerEnabled}
-                  onChange={(e) => setCaloryTrackerEnabled(e.target.checked)}
+                  className="toggle toggle-success"
+                  checked={isKeepFitEnabled}
+                  onChange={(e) => setKeepFitEnabled(e.target.checked)}
                 />
               </div>
             </div>

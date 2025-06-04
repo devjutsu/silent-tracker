@@ -16,6 +16,8 @@ import ActiveSession from '@/features/flow/ActiveSession';
 import FlowOps from '@/features/flow/FlowOps';
 import PulseOps from '@/features/pulse/PulseOps';
 import CaloryWidget from '@/features/calory/CaloryWidget';
+import HydrationWidget from '@/features/hydration/HydrationWidget';
+import FitWidget from '@/features/fit/FitWidget';
 
 export default function Home() {
   const { user, loading: authLoading, error: authError } = useAuthStore();
@@ -106,7 +108,13 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-          <CaloryWidget />
+          <div>
+            <CaloryWidget />
+          </div>
+          <div className="flex flex-col gap-4">
+            <HydrationWidget />
+            <FitWidget />
+          </div>
         </div>
 
         <RecentActivity entries={entries} />

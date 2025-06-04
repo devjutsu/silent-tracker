@@ -5,10 +5,10 @@ import { useFeatureFlags } from '@/features/settings/featureFlags';
 import { Plus, BarChart } from 'lucide-react';
 
 export default function CaloryWidget() {
-  const { isCaloryTrackerEnabled } = useFeatureFlags();
+  const { isKeepFitEnabled } = useFeatureFlags();
   const { meals, dailyLimit, totalCalories } = useCaloryStore();
 
-  if (!isCaloryTrackerEnabled) return null;
+  if (!isKeepFitEnabled) return null;
 
   const groupedMeals: Record<string, { name: string; calories: number }[]> = {
     Breakfast: [],
