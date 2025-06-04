@@ -15,7 +15,7 @@ import TodayFlow from '@/features/flow/TodayFlow';
 import ActiveSession from '@/features/flow/ActiveSession';
 import FlowOps from '@/features/flow/FlowOps';
 import PulseOps from '@/features/pulse/PulseOps';
-import CaloryOps from '@/features/calory/CaloryTracker';
+import CaloryWidget from '@/features/calory/CaloryWidget';
 
 export default function Home() {
   const { user, loading: authLoading, error: authError } = useAuthStore();
@@ -105,7 +105,9 @@ export default function Home() {
           <PulseOps onPulseClick={() => setIsPulseModalOpen(true)} />
         </div>
 
-        <CaloryOps />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <CaloryWidget />
+        </div>
 
         <RecentActivity entries={entries} />
 
