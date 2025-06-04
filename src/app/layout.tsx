@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
-import { Toaster } from 'react-hot-toast';
 import ThemeProvider from '../features/theme/ThemeProvider';
 import MenuModalWrapper from '@/features/main/MenuModalWrapper';
-import Header from '@/components/ui/Header';
+import Header from '@/components/Header';
+import Bakery from '@/features/bakery/Bakery';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -78,45 +78,7 @@ export default function RootLayout({
           {/* <AlertDialog /> */}
           {/* <ConfirmDialog /> */}
           {/* <PromptDialog /> */}
-          <Toaster
-            position="bottom-center"
-            toastOptions={{
-              style: {
-                background: 'var(--color-base-200)',
-                color: 'var(--color-base-content)',
-              },
-              success: {
-                style: {
-                  background: 'var(--color-success)',
-                  color: 'var(--color-success-content)',
-                },
-                iconTheme: {
-                  primary: 'var(--color-success-content)',
-                  secondary: 'var(--color-success)',
-                },
-              },
-              error: {
-                style: {
-                  background: 'var(--color-error)',
-                  color: 'var(--color-error-content)',
-                },
-                iconTheme: {
-                  primary: 'var(--color-error-content)',
-                  secondary: 'var(--color-error)',
-                },
-              },
-              loading: {
-                style: {
-                  background: 'var(--color-info)',
-                  color: 'var(--color-info-content)',
-                },
-                iconTheme: {
-                  primary: 'var(--color-info-content)',
-                  secondary: 'var(--color-info)',
-                },
-              },
-            }}
-          />
+          <Bakery />
         </ThemeProvider>
       </body>
     </html>
