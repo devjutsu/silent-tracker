@@ -8,12 +8,13 @@ import { useNotificationStore } from '@/features/notifications/notifications';
 import Login from '@/features/auth/Login';
 import PulseModal from '@/features/pulse/PulseModal';
 import toast from 'react-hot-toast';
-import ActionCards from '@/components/ActionCards';
 import RecentActivity from '@/features/flow/RecentActivity';
 import PulseHistory from '@/features/pulse/PulseHistory';
 import PurgeButton from '@/components/PurgeButton';
 import TodayFlow from '@/features/flow/TodayFlow';
 import ActiveSession from '@/features/flow/ActiveSession';
+import FlowOps from '@/components/FlowOps';
+import PulseOps from '@/components/PulseOps';
 
 export default function Home() {
   const { user, loading: authLoading, error: authError } = useAuthStore();
@@ -95,11 +96,13 @@ export default function Home() {
           <ActiveSession currentEntry={currentEntry} />
         </div>
 
-        <ActionCards
-          currentEntry={currentEntry}
-          onTrackingClick={handleTracking}
-          onPulseClick={() => setIsPulseModalOpen(true)}
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <FlowOps
+            currentEntry={currentEntry}
+            onTrackingClick={handleTracking}
+          />
+          <PulseOps onPulseClick={() => setIsPulseModalOpen(true)} />
+        </div>
 
         <RecentActivity entries={entries} />
 
