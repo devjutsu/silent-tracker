@@ -1,8 +1,9 @@
 import React from 'react';
 import Link from 'next/link';
-import { LayoutDashboard, User, Settings, LogOut } from 'lucide-react';
+import { LayoutDashboard, User, Settings, LogOut, Apple } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuthStore } from '@/features/auth/auth';
+import { useFeatureFlags } from '@/features/settings/featureFlags';
 
 interface MenuModalProps {
   isOpen: boolean;
@@ -12,6 +13,7 @@ interface MenuModalProps {
 
 export default function MenuModal({ isOpen, onClose }: MenuModalProps) {
   const { signOut } = useAuthStore();
+  const { isCaloryTrackerEnabled } = useFeatureFlags();
   
   if (!isOpen) return null;
   async function handleSignOut() {
@@ -42,6 +44,13 @@ export default function MenuModal({ isOpen, onClose }: MenuModalProps) {
             <LayoutDashboard className="w-5 h-5 flex-shrink-0" />
             <span className="text-left">Main</span>
           </Link>
+          {isCaloryTrackerEnabled && (
+            <Link href="/calory" onClick={onClose}
+              className="btn btn-lg btn-ghost text-success bg-base-200 flex items-center gap-3 px-3 py-2 rounded-lg transition hover:bg-base-100 text-base font-medium cursor-pointer w-full">
+              <Apple className="w-5 h-5 flex-shrink-0" />
+              <span className="text-left">Calorie Tracker</span>
+            </Link>
+          )}
           <Link href="/profile" onClick={onClose}
             className="btn btn-lg btn-ghost text-info bg-base-200 flex items-center gap-3 px-3 py-2 rounded-lg transition hover:bg-base-100 text-base font-medium cursor-pointer w-full">
             <User className="w-5 h-5 flex-shrink-0" />

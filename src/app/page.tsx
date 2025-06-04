@@ -13,8 +13,9 @@ import PulseHistory from '@/features/pulse/PulseHistory';
 import PurgeButton from '@/components/PurgeButton';
 import TodayFlow from '@/features/flow/TodayFlow';
 import ActiveSession from '@/features/flow/ActiveSession';
-import FlowOps from '@/components/FlowOps';
-import PulseOps from '@/components/PulseOps';
+import FlowOps from '@/features/flow/FlowOps';
+import PulseOps from '@/features/pulse/PulseOps';
+import CaloryOps from '@/features/calory/CaloryTracker';
 
 export default function Home() {
   const { user, loading: authLoading, error: authError } = useAuthStore();
@@ -103,6 +104,8 @@ export default function Home() {
           />
           <PulseOps onPulseClick={() => setIsPulseModalOpen(true)} />
         </div>
+
+        <CaloryOps />
 
         <RecentActivity entries={entries} />
 
