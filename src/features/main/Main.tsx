@@ -6,11 +6,9 @@ import { useTrackingStore } from '@/features/flow/tracking';
 import { usePulseStore } from '@/features/pulse/pulse';
 import { useNotificationStore } from '@/features/notifications/notifications';
 import Login from '@/features/auth/Login';
-import PulseModal from '@/features/pulse/PulseModal';
-import toast from 'react-hot-toast';
+
 import RecentActivity from '@/features/flow/RecentActivity';
 import PulseHistory from '@/features/pulse/PulseHistory';
-import PurgeButton from '@/components/PurgeButton';
 import TodayFlow from '@/features/flow/TodayFlow';
 import ActiveSession from '@/features/flow/ActiveSession';
 import FlowOps from '@/features/flow/FlowOps';
@@ -20,22 +18,15 @@ import HydrationWidget from '@/features/hydration/HydrationWidget';
 import FitWidget from '@/features/fit/FitWidget';
 
 export default function Main() {
-  const { user, loading: authLoading, error: authError } = useAuthStore();
+  const { user, error: authError } = useAuthStore();
   const {
     entries,
     currentEntry,
-    loading: trackingLoading,
     error: trackingError,
     fetchEntries,
-    purgeEntries,
   } = useTrackingStore();
-  const {
-    records: pulseRecords,
-    loading: pulseLoading,
-    error: pulseError,
-    fetchRecords: fetchPulseRecords,
-    purgeRecords,
-  } = usePulseStore();
+  const { error: pulseError, fetchRecords: fetchPulseRecords } =
+    usePulseStore();
   const { requestPermission, isEnabled } = useNotificationStore();
 
   useEffect(() => {
@@ -50,27 +41,14 @@ export default function Main() {
     }
   }, [user, fetchEntries, fetchPulseRecords, requestPermission, isEnabled]);
 
-  if (authLoading || trackingLoading || pulseLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <span className="loading loading-spinner loading-lg"></span>
-      </div>
-    );
-  }
-
   if (!user) {
     return <Login />;
   }
 
-  const handlePurge = async () => {
-    await Promise.all([purgeEntries(), purgeRecords()]);
-    toast.success('All data has been purged');
-  };
-
   return (
     <div className="min-h-screen bg-base-200">
-       <div className="container mx-auto p-4">
-         <div className="stats shadow w-full overflow-x-auto">
+      <div className="container mx-auto p-4">
+        <div className="stats shadow w-full overflow-x-auto">
           <TodayFlow entries={entries} />
           <ActiveSession currentEntry={currentEntry} />
         </div>
@@ -91,19 +69,14 @@ export default function Main() {
         </div>
 
         <RecentActivity />
-
-        <PulseHistory records={pulseRecords} />
+        <PulseHistory />
 
         {(trackingError || authError || pulseError) && (
           <div className="alert alert-dash alert-error mt-4">
             <span>{trackingError || authError || pulseError}</span>
           </div>
         )}
-
-        <PurgeButton onPurge={handlePurge} /> 
       </div>
-
-      <PulseModal /> 
     </div>
   );
 }

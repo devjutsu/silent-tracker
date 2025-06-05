@@ -5,6 +5,7 @@ import ThemeProvider from '../features/theme/ThemeProvider';
 import MenuModalWrapper from '@/features/main/MenuModalWrapper';
 import Header from '@/components/Header';
 import Bakery from '@/features/bakery/Bakery';
+import PulseModal from '@/features/pulse/PulseModal';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -73,6 +74,7 @@ export default function RootLayout({
         <ThemeProvider>
           <Header />
           <MenuModalWrapper />
+          <PulseModal /> 
           {/* <Modal /> */}
           {children}
           {/* <AlertDialog /> */}

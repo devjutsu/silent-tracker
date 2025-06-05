@@ -1,20 +1,30 @@
-interface PurgeButtonProps {
-  onPurge: () => Promise<void>;
-}
+import { useTrackingStore } from '@/features/flow/tracking';
+import { usePulseStore } from '@/features/pulse/pulse';
+import toast from 'react-hot-toast';
 
-export default function PurgeButton({ onPurge }: PurgeButtonProps) {
+export default function PurgeButton() {
+  const { purgeEntries } = useTrackingStore();
+  const { purgeRecords } = usePulseStore();
+
+  const handlePurge = async () => {
+    await Promise.all([purgeEntries(), purgeRecords()]);
+    toast.success('All data has been purged');
+  };
+
   return (
-    <div className="mt-8 flex justify-center">
-      <button
-        className="btn btn-error btn-outline"
-        onClick={async () => {
-          if (window.confirm('Are you sure you want to delete all your focus flow items and pulse records? This action cannot be undone.')) {
-            await onPurge();
-          }
-        }}
-      >
-        Purge Data
-      </button>
-    </div>
+    <button
+      className="btn btn-error btn-outline"
+      onClick={async () => {
+        if (
+          window.confirm(
+            'Are you sure you want to delete all your focus flow items and pulse records? This action cannot be undone.'
+          )
+        ) {
+          await handlePurge;
+        }
+      }}
+    >
+      Purge
+    </button>
   );
-} 
+}

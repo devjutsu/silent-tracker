@@ -1,12 +1,32 @@
-import { PulseRecord } from '@/features/pulse/pulse';
+import { useEffect } from 'react';
+import { usePulseStore } from '@/features/pulse/pulse';
 import { usePulseModalStore } from './pulseModalStore';
+import { PulseRecord } from '@/features/pulse/pulse';
 
 interface PulseHistoryProps {
-  records: PulseRecord[];
+  records?: PulseRecord[];
 }
 
-export default function PulseHistory({ records }: PulseHistoryProps) {
+export default function PulseHistory({ records: propRecords }: PulseHistoryProps) {
+  const { records: storeRecords, fetchRecords, loading } = usePulseStore();
   const { openModal } = usePulseModalStore();
+  const records = propRecords || storeRecords;
+
+  useEffect(() => {
+    if (!propRecords && storeRecords.length === 0) {
+      fetchRecords();
+    }
+  }, []); // Only run once on mount
+
+  if (loading) {
+    return (
+      <div className="card bg-base-100 shadow-xl mt-4">
+        <div className="card-body">
+          <span className="loading loading-spinner loading-md"></span>
+        </div>
+      </div>
+    );
+  }
 
   if (records.length === 0) {
     return (
