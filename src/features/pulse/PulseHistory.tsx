@@ -16,7 +16,7 @@ export default function PulseHistory({ records: propRecords }: PulseHistoryProps
     if (!propRecords && storeRecords.length === 0) {
       fetchRecords();
     }
-  }, []); // Only run once on mount
+  }, [propRecords, storeRecords.length, fetchRecords]);
 
   if (loading) {
     return (

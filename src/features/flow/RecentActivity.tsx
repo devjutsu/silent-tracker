@@ -14,7 +14,7 @@ export default function RecentActivity({ entries: propEntries }: RecentActivityP
     if (!propEntries && storeEntries.length === 0) {
       fetchEntries();
     }
-  }, []); // Only run once on mount
+  }, [propEntries, storeEntries.length, fetchEntries]);
 
   if (loading) {
     return (

@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { LayoutDashboard, User, Settings, LogOut, Apple, Droplet } from 'lucide-react';
+import { LayoutDashboard, User, Settings, LogOut, Apple } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuthStore } from '@/features/auth/auth';
 import { useFeatureFlags } from '@/features/settings/featureFlags';

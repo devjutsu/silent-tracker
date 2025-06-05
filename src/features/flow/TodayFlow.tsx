@@ -14,7 +14,7 @@ export default function TodayFlow({ entries: propEntries }: TodayFlowProps) {
     if (!propEntries && storeEntries.length === 0) {
       fetchEntries();
     }
-  }, []); // Only run once on mount
+  }, [propEntries, storeEntries.length, fetchEntries]); // Added missing dependencies
 
   if (loading) {
     return (

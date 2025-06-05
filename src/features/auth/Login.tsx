@@ -11,7 +11,10 @@ export default function Login() {
   const [mode, setMode] = useState<AuthMode>('sign-in');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [message, setMessage] = useState<{ type: 'error' | 'success'; text: string } | null>(null);
+  const [message, setMessage] = useState<{
+    type: 'error' | 'success';
+    text: string;
+  } | null>(null);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,17 +25,28 @@ export default function Login() {
         await signIn(email, password);
       } else if (mode === 'sign-up') {
         await signUp(email, password);
-        setMessage({ type: 'success', text: 'Check your email for the confirmation link!' });
+        setMessage({
+          type: 'success',
+          text: 'Check your email for the confirmation link!',
+        });
       } else if (mode === 'reset') {
         await resetPassword(email);
-        setMessage({ type: 'success', text: 'Check your email for the password reset link!' });
+        setMessage({
+          type: 'success',
+          text: 'Check your email for the password reset link!',
+        });
       }
     } catch (error) {
-      setMessage({ type: 'error', text: error instanceof Error ? error.message : 'An error occurred' });
+      setMessage({
+        type: 'error',
+        text: error instanceof Error ? error.message : 'An error occurred',
+      });
     }
   };
 
-  const handleSocialLogin = async (provider: 'google' | 'facebook' | 'apple') => {
+  const handleSocialLogin = async (
+    provider: 'google' | 'facebook' | 'apple'
+  ) => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
@@ -42,7 +56,10 @@ export default function Login() {
       });
       if (error) throw error;
     } catch (error) {
-      setMessage({ type: 'error', text: error instanceof Error ? error.message : 'An error occurred' });
+      setMessage({
+        type: 'error',
+        text: error instanceof Error ? error.message : 'An error occurred',
+      });
     }
   };
 
@@ -55,11 +72,9 @@ export default function Login() {
   }
 
   return (
-    <div className="bg-base-300 flex items-center justify-center p-4">
+    <div className="bg-base-300 flex items-center justify-center p-4 pt-0">
       <div className="card w-full max-w-md bg-base-100 shadow-xl">
         <div className="card-body">
-          <h1 className="text-2xl font-bold text-center mb-4">Silent Tracker</h1>
-          
           {/* Mode Tabs */}
           <div className="tabs tabs-boxed justify-center mb-4">
             <button
@@ -74,12 +89,12 @@ export default function Login() {
             >
               Sign Up
             </button>
-            <button
+            {/* <button
               className={`tab ${mode === 'reset' ? 'tab-active' : ''}`}
               onClick={() => setMode('reset')}
             >
               Reset Password
-            </button>
+            </button> */}
           </div>
 
           {/* Auth Form */}
@@ -114,15 +129,17 @@ export default function Login() {
             )}
 
             <button type="submit" className="btn btn-primary w-full">
-              {mode === 'sign-in' ? 'Sign In' : mode === 'sign-up' ? 'Sign Up' : 'Reset Password'}
+              {mode === 'sign-in'
+                ? 'Sign In'
+                : mode === 'sign-up'
+                ? 'Sign Up'
+                : 'Reset Password'}
             </button>
           </form>
 
           {/* Social Login */}
-          {mode === 'sign-in' && (
-            <div className="divider">OR</div>
-          )}
-          
+          {mode === 'sign-in' && <div className="divider">OR</div>}
+
           {mode === 'sign-in' && (
             <div className="flex flex-col gap-2">
               <button
@@ -148,7 +165,11 @@ export default function Login() {
 
           {/* Messages */}
           {message && (
-            <div className={`alert ${message.type === 'error' ? 'alert-error' : 'alert-success'} mt-4`}>
+            <div
+              className={`alert ${
+                message.type === 'error' ? 'alert-error' : 'alert-success'
+              } mt-4`}
+            >
               <span>{message.text}</span>
             </div>
           )}
@@ -156,4 +177,4 @@ export default function Login() {
       </div>
     </div>
   );
-} 
+}

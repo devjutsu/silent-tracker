@@ -10,7 +10,7 @@
 
 html, body {
   height: 100%;
-  background-color: theme('colors.base.300');
+  background-color: theme('colors.base.200');
 }
 
 @theme inline {

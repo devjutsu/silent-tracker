@@ -2,8 +2,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import ThemeProvider from '../features/theme/ThemeProvider';
-import MenuModalWrapper from '@/features/main/MenuModalWrapper';
-import Header from '@/components/Header';
+import MenuModalWrapper from '@/features/menu/MenuModalWrapper';
 import Bakery from '@/features/bakery/Bakery';
 import PulseModal from '@/features/pulse/PulseModal';
 
@@ -72,9 +71,8 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider>
-          <Header />
           <MenuModalWrapper />
-          <PulseModal /> 
+          <PulseModal />
           {/* <Modal /> */}
           {children}
           {/* <AlertDialog /> */}

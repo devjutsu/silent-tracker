@@ -6,9 +6,9 @@ import { useAuthStore } from '@/features/auth/auth';
 import toast from 'react-hot-toast';
 import React from 'react';
 import { supabase } from '@/lib/supabase';
-import AvatarEditor from '../../features/profile/AvatarEditor';
-import ProfileInfoCard from '../../features/profile/ProfileInfoCard';
-import ProfileUpdateForm from '../../features/profile/ProfileUpdateForm';
+import AvatarEditor from '@/features/profile/AvatarEditor';
+import ProfileInfoCard from '@/features/profile/ProfileInfoCard';
+import ProfileUpdateForm from '@/features/profile/ProfileUpdateForm';
 
 export default function Profile() {
   const router = useRouter();
@@ -89,7 +89,7 @@ export default function Profile() {
   }
 
   return (
-      <main className="flex-1 flex flex-col items-center py-8 bg-base-300">
+      <main className="flex-1 flex flex-col items-center py-8">
         <h2 className="text-3xl font-bold mb-8">Profile</h2>
         <div className="flex flex-col gap-8 w-full max-w-2xl">
           <div className="card bg-base-100 shadow-xl p-6 rounded-box flex flex-col items-center">

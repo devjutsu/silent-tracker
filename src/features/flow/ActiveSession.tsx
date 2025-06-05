@@ -15,7 +15,7 @@ export default function ActiveSession({ currentEntry: propCurrentEntry }: Active
     if (propCurrentEntry === undefined && !storeCurrentEntry) {
       fetchEntries();
     }
-  }, []); // Only run once on mount
+  }, [propCurrentEntry, storeCurrentEntry, fetchEntries]); // Added missing dependencies
 
   if (loading) {
     return (

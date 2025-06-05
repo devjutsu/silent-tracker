@@ -25,7 +25,7 @@ export default function FitPage() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="flex items-center justify-center">
         <span className="loading loading-spinner loading-lg"></span>
       </div>
     );
@@ -36,7 +36,7 @@ export default function FitPage() {
   }
 
   return (
-    <div className="min-h-screen bg-base-200">
+    <div className="bg-base-200">
       <div className="container mx-auto p-4">
         <div className="grid grid-cols-1 gap-4">
           <CaloryTracker />
