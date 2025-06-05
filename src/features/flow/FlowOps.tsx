@@ -1,12 +1,25 @@
 import { CirclePause, CirclePlay } from 'lucide-react';
-import { TrackingEntry } from '@/features/flow/tracking';
+import { useTrackingStore, TrackingEntry } from './tracking';
+import toast from 'react-hot-toast';
 
 interface FlowOpsProps {
-  currentEntry: TrackingEntry | null;
-  onTrackingClick: () => void;
+  currentEntry?: TrackingEntry | null;
 }
 
-export default function FlowOps({ currentEntry, onTrackingClick }: FlowOpsProps) {
+export default function FlowOps({ currentEntry: propCurrentEntry }: FlowOpsProps) {
+  const { currentEntry: storeCurrentEntry, startTracking, stopTracking } = useTrackingStore();
+  const currentEntry = propCurrentEntry ?? storeCurrentEntry;
+
+  const handleTracking = async () => {
+    if (currentEntry) {
+      await stopTracking();
+      toast('Tracking stopped');
+    } else {
+      await startTracking('New tracking session');
+      toast('Tracking started');
+    }
+  };
+
   return (
     <div className="card bg-base-100 shadow-xl">
       <div className="card-body">
@@ -15,7 +28,7 @@ export default function FlowOps({ currentEntry, onTrackingClick }: FlowOpsProps)
           className={`btn btn-lg ${
             currentEntry ? 'btn-warning' : 'btn-primary'
           }`}
-          onClick={onTrackingClick}
+          onClick={handleTracking}
         >
           {currentEntry ? (
             <>

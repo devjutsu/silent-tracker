@@ -30,23 +30,21 @@ export default function Header() {
         </Link>
       </div>
       <div className="flex-none gap-2">
-        <button
-          className="btn btn-ghost btn-circle avatar"
-          onClick={() => setIsMenuOpen(true)}
-          aria-label="Open menu"
-        >
-          <div className="w-10 rounded-full">
-            <img
-              alt="User avatar"
-              src={
-                user?.email
-                  ? `https://api.dicebear.com/9.x/glass/svg?seed=${user.email}`
-                  : 'https://api.dicebear.com/9.x/glass/svg?seed=anonymous'
-              }
-              className="w-10 h-10 rounded-full"
-            />
-          </div>
-        </button>
+        {user && (
+          <button
+            className="btn btn-ghost btn-circle avatar"
+            onClick={() => setIsMenuOpen(true)}
+            aria-label="Open menu"
+          >
+            <div className="w-10 rounded-full">
+              <img
+                alt="User avatar"
+                src={`https://api.dicebear.com/9.x/glass/svg?seed=${user.email}`}
+                className="w-10 h-10 rounded-full"
+              />
+            </div>
+          </button>
+        )}
       </div>
     </header>
   );

@@ -13,11 +13,14 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 - [x] dashboard in '/' page
 - [x] fix user in Header
 - [x] Toast to use Theme
-- [ ] Theme switch between Dark/Light instead of names
-- [ ] Change default avatar outlook
-- [ ] Ticking timer
-- [ ] Tracking state to fetch from DB
+- [x] Theme switch between Dark/Light instead of names
+- [x] Change default avatar outlook
+- [x] Ticking timer
+- [x] Tracking state to fetch from DB
+- [ ] Make avatar only show for logged in user
 - [ ] Add focus flow convenient edit/del
+- [ ] Make Flow widget visual
+- [ ] Make Pulse widget visual
 
 ## DB
 ### Pulse
