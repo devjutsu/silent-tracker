@@ -32,7 +32,7 @@ export default function ActiveSession({ currentEntry: propCurrentEntry }: Active
     return (
       <div className="stat">
         <div className="stat-title">Active Session</div>
-        <div className="stat-value">None</div>
+        <div className="stat-value">—</div>
       </div>
     );
   }

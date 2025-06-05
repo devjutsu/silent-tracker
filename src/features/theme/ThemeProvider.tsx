@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useThemeStore } from '@/features/theme/theme';
+import { LIGHT, useThemeStore } from '@/features/theme/theme';
 
 export default function ThemeProvider({
   children,
@@ -11,32 +11,23 @@ export default function ThemeProvider({
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useThemeStore();
 
-  // Handle initial theme load
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme-storage');
-    if (savedTheme) {
+    const saved = localStorage.getItem('theme-storage');
+    if (saved) {
       try {
-        const { state } = JSON.parse(savedTheme);
-        setTheme(state.theme);
-      } catch (error) {
-        console.error('Error parsing theme from localStorage:', error);
-      }
+        const parsed = JSON.parse(saved);
+        const storedTheme = parsed?.state?.theme;
+        if (storedTheme === LIGHT) {
+          setTheme('emerald');
+        } else {
+          setTheme('abyss');
+        }
+      } catch {}
     }
+    setMounted(true);
   }, [setTheme]);
 
-  // Handle hydration
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  if (!mounted) return null;
 
-  // During SSR and initial client render, render without theme
-  if (!mounted) {
-    return <>{children}</>;
-  }
-
-  return (
-    <div data-theme={theme}>
-      {children}
-    </div>
-  );
-} 
+  return <div data-theme={theme}>{children}</div>;
+}

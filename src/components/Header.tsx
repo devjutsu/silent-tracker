@@ -12,19 +12,20 @@ export default function Header() {
   const { user } = useAuthStore();
   /* eslint-disable @next/next/no-img-element */
   return (
-    <header className="navbar top-0 z-50 w-full border-b border-neutral p-0 bg-base-300">
+    <header className="navbar top-0 z-50 w-full border-b border-neutral p-0 px-8 bg-base-300">
       <div className="container flex max-w-screen-2xl items-center">
         <Link href="/" className="flex items-center space-x-2">
           <img
-            src={
-              theme === LIGHT_THEME
-                ? '/logo-light-192x192.png'
-                : '/logo-dark-192x192.png'
-            }
+            // src={
+            //   theme === LIGHT_THEME
+            //     ? '/logo-light-192x192.png'
+            //     : '/logo-dark-192x192.png'
+            // }
+            src='/logo-md.png'
             alt="Silent Tracker Logo"
             width={64}
             height={64}
-            className="rounded-md"
+            className="rounded-md mb-1"
           />
           <span className="font-bold text-secondary">Silent Tracker</span>
         </Link>

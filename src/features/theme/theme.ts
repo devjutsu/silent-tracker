@@ -2,9 +2,18 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import toast from 'react-hot-toast';
 
+export const DARK = 'dark';
+export const LIGHT = 'light';
+export type ThemeBase = typeof DARK | typeof LIGHT;
 export const DARK_THEME = 'abyss';
 export const LIGHT_THEME = 'emerald';
-type Theme = typeof DARK_THEME | typeof LIGHT_THEME;
+export type Theme = typeof DARK_THEME | typeof LIGHT_THEME;
+
+interface ThemeState {
+  theme: Theme;
+  setTheme: (theme: Theme) => void;
+  toggleTheme: () => void;
+}
 
 interface ThemeState {
   theme: Theme;
@@ -19,7 +28,13 @@ const getThemeFromStorage = (): Theme => {
   
   try {
     const { state } = JSON.parse(savedTheme);
-    return state.theme === 'dark' ? DARK_THEME : LIGHT_THEME;
+    // Convert stored theme base to actual theme
+    const theme = state.theme === 'dark' ? DARK_THEME : LIGHT_THEME;
+    // Apply theme immediately
+    if (typeof window !== 'undefined') {
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+    return theme;
   } catch {
     return DARK_THEME;
   }
@@ -27,23 +42,24 @@ const getThemeFromStorage = (): Theme => {
 
 export const useThemeStore = create<ThemeState>()(
   persist(
-    (set) => ({
-      theme: getThemeFromStorage(),
+    (set, get) => ({
+      theme: DARK_THEME, 
       setTheme: (theme) => {
         set({ theme });
-        if (typeof window !== 'undefined') {
+        if (typeof document !== 'undefined') {
           document.documentElement.setAttribute('data-theme', theme);
         }
       },
       toggleTheme: () => {
-        set((state) => {
-          const newTheme = state.theme === DARK_THEME ? LIGHT_THEME : DARK_THEME;
-          if (typeof window !== 'undefined') {
-            document.documentElement.setAttribute('data-theme', newTheme);
-            toast.success(`Using ${newTheme === DARK_THEME ? 'dark' : 'light'} theme`);
-          }
-          return { theme: newTheme };
-        });
+        const currentBase: ThemeBase = get().theme === DARK_THEME ? 'dark' : 'light';
+        const newBase: ThemeBase = currentBase === 'dark' ? 'light' : 'dark';
+        const newTheme = newBase === 'dark' ? DARK_THEME : LIGHT_THEME;
+        set({ theme: newTheme });
+
+        if (typeof document !== 'undefined') {
+          document.documentElement.setAttribute('data-theme', newTheme);
+          toast.success(`Using ${newBase} theme`);
+        }
       },
     }),
     {
@@ -53,32 +69,26 @@ export const useThemeStore = create<ThemeState>()(
           const str = localStorage.getItem(name);
           if (!str) return null;
           try {
-            const { state } = JSON.parse(str);
-            return JSON.stringify({
-              state: {
-                theme: state.theme === 'dark' ? DARK_THEME : LIGHT_THEME
-              },
-              version: 0
-            });
+            const parsed = JSON.parse(str);
+            const base: ThemeBase = parsed?.state?.theme;
+            const realTheme = base === 'dark' ? DARK_THEME : LIGHT_THEME;
+            return JSON.stringify({ state: { theme: realTheme }, version: 0 });
           } catch {
             return null;
           }
         },
         setItem: (name, value) => {
           try {
-            const { state } = JSON.parse(value as string);
-            localStorage.setItem(name, JSON.stringify({
-              state: {
-                theme: state.theme === DARK_THEME ? 'dark' : 'light'
-              },
-              version: 0
-            }));
-          } catch (error) {
-            console.error('Error saving theme to localStorage:', error);
+            const { state } = JSON.parse(value);
+            const base: ThemeBase = state.theme === DARK_THEME ? 'dark' : 'light';
+            const json = JSON.stringify({ state: { theme: base }, version: 0 });
+            localStorage.setItem(name, json);
+          } catch (err) {
+            console.error('Failed to save theme:', err);
           }
         },
         removeItem: (name) => localStorage.removeItem(name),
       })),
     }
   )
-); 
+);

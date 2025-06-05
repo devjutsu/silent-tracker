@@ -2,14 +2,8 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Next things:
 [Boilerplate to check with](https://www.ory.sh/blog/enterprise-ready-saas-starter-kit)
-- [ ] Sign in with Google OAuth
-- [ ] Sign in with Facebook 
-- [ ] Webhooks and Events
-- [ ] Audit logs
-- [ ] Internationalization
 
-
-### Micro things:
+### Do things:
 - [x] dashboard in '/' page
 - [x] fix user in Header
 - [x] Toast to use Theme
@@ -26,6 +20,11 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 - [ ] {/* <ConfirmDialog /> */}
 - [ ] {/* <PromptDialog /> */}
 - [ ] Confirm purge with own dialog
+- [ ] Sign in with Google OAuth
+- [ ] Sign in with Facebook 
+- [ ] Webhooks and Events
+- [ ] Audit logs
+- [ ] Internationalization
 
 ## DB
 ### Pulse
