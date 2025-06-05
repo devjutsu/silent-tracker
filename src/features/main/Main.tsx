@@ -49,8 +49,8 @@ export default function Main() {
     <div className="min-h-screen bg-base-200">
       <div className="container mx-auto p-4">
         <div className="stats shadow w-full overflow-x-auto">
-          <TodayFlow entries={entries} />
-          <ActiveSession currentEntry={currentEntry} />
+          <TodayFlow />
+          <ActiveSession />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">

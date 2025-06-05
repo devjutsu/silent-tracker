@@ -89,8 +89,7 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <main className="flex-1 flex flex-col items-center pt-8">
+      <main className="flex-1 flex flex-col items-center py-8 bg-base-300">
         <h2 className="text-3xl font-bold mb-8">Profile</h2>
         <div className="flex flex-col gap-8 w-full max-w-2xl">
           <div className="card bg-base-100 shadow-xl p-6 rounded-box flex flex-col items-center">
@@ -115,6 +114,5 @@ export default function Profile() {
           </div>
         </div>
       </main>
-    </div>
   );
 }
