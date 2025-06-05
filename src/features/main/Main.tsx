@@ -19,12 +19,7 @@ import FitWidget from '@/features/fit/FitWidget';
 
 export default function Main() {
   const { user, error: authError } = useAuthStore();
-  const {
-    entries,
-    currentEntry,
-    error: trackingError,
-    fetchEntries,
-  } = useTrackingStore();
+  const { error: trackingError, fetchEntries } = useTrackingStore();
   const { error: pulseError, fetchRecords: fetchPulseRecords } =
     usePulseStore();
   const { requestPermission, isEnabled } = useNotificationStore();
@@ -42,7 +37,12 @@ export default function Main() {
   }, [user, fetchEntries, fetchPulseRecords, requestPermission, isEnabled]);
 
   if (!user) {
-    return <Login />;
+    return <>
+      <div className="flex justify-center items-center bg-base-300">
+        <img src="/logo-dark.png" alt="Logo" className="w-64 h-auto" />
+      </div>
+      <Login />
+    </>
   }
 
   return (

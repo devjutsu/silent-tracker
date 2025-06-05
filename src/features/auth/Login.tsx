@@ -55,7 +55,7 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-base-200 flex items-center justify-center p-4">
+    <div className="bg-base-300 flex items-center justify-center p-4">
       <div className="card w-full max-w-md bg-base-100 shadow-xl">
         <div className="card-body">
           <h1 className="text-2xl font-bold text-center mb-4">Silent Tracker</h1>

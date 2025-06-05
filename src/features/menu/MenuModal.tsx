@@ -45,7 +45,7 @@ export default function MenuModal({ isOpen, onClose }: MenuModalProps) {
             <span className="text-left">Main</span>
           </Link>
           {isKeepFitEnabled && (
-            <Link href="/calory" onClick={onClose}
+            <Link href="/fit" onClick={onClose}
               className="btn btn-lg btn-ghost text-success bg-base-200 flex items-center gap-3 px-3 py-2 rounded-lg transition hover:bg-base-100 text-base font-medium cursor-pointer w-full">
               <Apple className="w-5 h-5 flex-shrink-0" />
               <span className="text-left">Fit Coach</span>

@@ -28,13 +28,22 @@ export default function PulseHistory({ records: propRecords }: PulseHistoryProps
     );
   }
 
-  if (records.length === 0) {
+  // Filter records for today only
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const todayRecords = records.filter(record => {
+    const recordDate = new Date(record.created_at);
+    recordDate.setHours(0, 0, 0, 0);
+    return recordDate.getTime() === today.getTime();
+  });
+
+  if (todayRecords.length === 0) {
     return (
       <div className="card bg-base-100 shadow-xl mt-4">
         <div className="card-body">
           <div className="flex flex-col items-center justify-center text-center">
             <div className="text-4xl">📊</div>
-            <h3 className="text-lg font-semibold">No records yet</h3>
+            <h3 className="text-lg font-semibold">No records today</h3>
             <p className="text-base-content/70 mb-4">
               Start tracking your focus levels to see your history here.
             </p>
@@ -53,21 +62,21 @@ export default function PulseHistory({ records: propRecords }: PulseHistoryProps
   return (
     <div className="card bg-base-100 shadow-xl mt-4">
       <div className="card-body">
-        <h2 className="card-title">Pulse History</h2>
+        <h2 className="card-title">Today&apos;s Pulse History</h2>
         <div className="overflow-x-auto">
           <table className="table">
             <thead>
               <tr>
-                <th>Date</th>
+                <th>Time</th>
                 <th>Focus Level</th>
                 <th>Activity</th>
                 <th>Tag</th>
               </tr>
             </thead>
             <tbody>
-              {records.map((record) => (
+              {todayRecords.map((record) => (
                 <tr key={record.id}>
-                  <td>{new Date(record.created_at).toLocaleString()}</td>
+                  <td>{new Date(record.created_at).toLocaleTimeString()}</td>
                   <td>
                     <div className="flex items-center gap-2">
                       <div className="rating rating-sm">

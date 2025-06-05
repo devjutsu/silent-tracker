@@ -17,7 +17,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 - [x] Change default avatar outlook
 - [x] Ticking timer
 - [x] Tracking state to fetch from DB
-- [ ] Make avatar only show for logged in user
+- [x] Make avatar only show for logged in user
 - [ ] Add focus flow convenient edit/del
 - [ ] Make Flow widget visual
 - [ ] Make Pulse widget visual

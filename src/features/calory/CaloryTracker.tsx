@@ -2,23 +2,26 @@
 
 import { useState } from 'react';
 import { useCaloryStore, Meal } from '@/features/calory/caloryStore';
-import { useFeatureFlags } from '@/features/settings/featureFlags';
 import { Plus, Settings, BarChart } from 'lucide-react';
 import { NewMealState } from './types';
 
-
 export default function CaloryTracker() {
-  const { isCaloryTrackerEnabled } = useFeatureFlags();
-  const { meals, addMeal, removeMeal, dailyLimit, setDailyLimit, totalCalories } = useCaloryStore();
+  const {
+    meals,
+    addMeal,
+    removeMeal,
+    dailyLimit,
+    setDailyLimit,
+    totalCalories,
+  } = useCaloryStore();
   const [isAddingMeal, setIsAddingMeal] = useState(false);
   const [isSettingLimit, setIsSettingLimit] = useState(false);
-  const [newMeal, setNewMeal] = useState<NewMealState>({ name: '', calories: '' });
+  const [newMeal, setNewMeal] = useState<NewMealState>({
+    name: '',
+    calories: '',
+  });
   const [newLimit, setNewLimit] = useState(dailyLimit);
   const [limitInput, setLimitInput] = useState(dailyLimit.toString());
-
-  if (!isCaloryTrackerEnabled) {
-    return null;
-  }
 
   const handleAddMeal = (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,7 +75,13 @@ export default function CaloryTracker() {
           </div>
         </div>
 
-        <div className="divider">Today – {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}</div>
+        <div className="divider">
+          Today –{' '}
+          {new Date().toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+          })}
+        </div>
 
         {/* Daily Progress */}
         <div className="space-y-2">
@@ -118,14 +127,18 @@ export default function CaloryTracker() {
                 placeholder="Meal name"
                 className="input input-bordered flex-1"
                 value={newMeal.name}
-                onChange={(e) => setNewMeal({ ...newMeal, name: e.target.value })}
+                onChange={(e) =>
+                  setNewMeal({ ...newMeal, name: e.target.value })
+                }
               />
               <input
                 type="number"
                 placeholder="Calories"
                 className="input input-bordered w-32"
                 value={newMeal.calories}
-                onChange={(e) => setNewMeal({ ...newMeal, calories: e.target.value })}
+                onChange={(e) =>
+                  setNewMeal({ ...newMeal, calories: e.target.value })
+                }
                 min="1"
               />
               <button type="submit" className="btn btn-primary">
@@ -170,7 +183,11 @@ export default function CaloryTracker() {
         <div className="flex justify-between items-center">
           <div>
             <span className="font-semibold">Total: </span>
-            <span className={totalCalories > dailyLimit ? 'text-error' : 'text-success'}>
+            <span
+              className={
+                totalCalories > dailyLimit ? 'text-error' : 'text-success'
+              }
+            >
               {totalCalories} / {dailyLimit} kcal
             </span>
           </div>
@@ -193,7 +210,9 @@ export default function CaloryTracker() {
                   type="text"
                   className="input input-bordered"
                   value={newMeal.name}
-                  onChange={(e) => setNewMeal({ ...newMeal, name: e.target.value })}
+                  onChange={(e) =>
+                    setNewMeal({ ...newMeal, name: e.target.value })
+                  }
                 />
               </div>
               <div className="form-control mt-4">
@@ -204,12 +223,18 @@ export default function CaloryTracker() {
                   type="number"
                   className="input input-bordered"
                   value={newMeal.calories || ''}
-                  onChange={(e) => setNewMeal({ ...newMeal, calories: e.target.value || '0' })}
+                  onChange={(e) =>
+                    setNewMeal({ ...newMeal, calories: e.target.value || '0' })
+                  }
                 />
               </div>
               <div className="modal-action">
-                <button className="btn" onClick={() => setIsAddingMeal(false)}>Cancel</button>
-                <button className="btn btn-primary" onClick={handleAddMeal}>Add Meal</button>
+                <button className="btn" onClick={() => setIsAddingMeal(false)}>
+                  Cancel
+                </button>
+                <button className="btn btn-primary" onClick={handleAddMeal}>
+                  Add Meal
+                </button>
               </div>
             </div>
           </div>
@@ -219,7 +244,9 @@ export default function CaloryTracker() {
         {isSettingLimit && (
           <div className="modal modal-open">
             <div className="modal-box">
-              <h3 className="font-bold text-lg mb-4">Set Daily Calorie Limit</h3>
+              <h3 className="font-bold text-lg mb-4">
+                Set Daily Calorie Limit
+              </h3>
               <div className="form-control">
                 <label className="label">
                   <span className="label-text">Daily Limit (kcal)</span>
@@ -232,8 +259,18 @@ export default function CaloryTracker() {
                 />
               </div>
               <div className="modal-action">
-                <button className="btn" onClick={() => setIsSettingLimit(false)}>Cancel</button>
-                <button className="btn btn-primary" onClick={() => setDailyLimit(newLimit)}>Set Limit</button>
+                <button
+                  className="btn"
+                  onClick={() => setIsSettingLimit(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setDailyLimit(newLimit)}
+                >
+                  Set Limit
+                </button>
               </div>
             </div>
           </div>
@@ -241,4 +278,4 @@ export default function CaloryTracker() {
       </div>
     </div>
   );
-} 
+}
