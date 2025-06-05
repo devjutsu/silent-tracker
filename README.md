@@ -21,6 +21,11 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 - [ ] Add focus flow convenient edit/del
 - [ ] Make Flow widget visual
 - [ ] Make Pulse widget visual
+- [ ] {/* <Modal /> */}
+- [ ] {/* <AlertDialog /> */}
+- [ ] {/* <ConfirmDialog /> */}
+- [ ] {/* <PromptDialog /> */}
+- [ ] Confirm purge with own dialog
 
 ## DB
 ### Pulse

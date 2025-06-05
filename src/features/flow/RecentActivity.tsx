@@ -1,10 +1,31 @@
+import { useEffect } from 'react';
+import { useTrackingStore } from '@/features/flow/tracking';
 import { TrackingEntry } from '@/features/flow/tracking';
 
 interface RecentActivityProps {
-  entries: TrackingEntry[];
+  entries?: TrackingEntry[];
 }
 
-export default function RecentActivity({ entries }: RecentActivityProps) {
+export default function RecentActivity({ entries: propEntries }: RecentActivityProps) {
+  const { entries: storeEntries, fetchEntries, loading } = useTrackingStore();
+  const entries = propEntries || storeEntries;
+
+  useEffect(() => {
+    if (!propEntries && storeEntries.length === 0) {
+      fetchEntries();
+    }
+  }, []); // Only run once on mount
+
+  if (loading) {
+    return (
+      <div className="card bg-base-100 shadow-xl mt-4">
+        <div className="card-body">
+          <span className="loading loading-spinner loading-md"></span>
+        </div>
+      </div>
+    );
+  }
+
   if (entries.length === 0) return null;
 
   return (

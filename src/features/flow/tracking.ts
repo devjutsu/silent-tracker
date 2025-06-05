@@ -92,10 +92,18 @@ export const useTrackingStore = create<TrackingState>((set, get) => ({
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
 
+      // Get today's start and end timestamps
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+
       const { data, error } = await supabase
         .from('tracking_entries')
         .select('*')
         .eq('user_id', user.id)
+        .gte('start_time', today.toISOString())
+        .lt('start_time', tomorrow.toISOString())
         .order('created_at', { ascending: false });
 
       if (error) throw error;

@@ -3,16 +3,13 @@
 import { useState, useEffect } from 'react';
 import { usePulseStore } from '@/features/pulse/pulse';
 import { useNotificationStore } from '@/features/notifications/notifications';
+import { usePulseModalStore } from './pulseModalStore';
 import toast from 'react-hot-toast';
 
 type ActivityType = 'work' | 'study' | 'rest' | 'procrastination' | 'fitness';
 
-interface PulseModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-export default function PulseModal({ isOpen, onClose }: PulseModalProps) {
+export default function PulseModal() {
+  const { isOpen, closeModal } = usePulseModalStore();
   const { addRecord } = usePulseStore();
   const { setModalOpen } = useNotificationStore();
   const [focusLevel, setFocusLevel] = useState(3);
@@ -40,7 +37,7 @@ export default function PulseModal({ isOpen, onClose }: PulseModalProps) {
     try {
       await addRecord(focusLevel, activity, tag.trim() || undefined);
       toast.success('Pulse record added successfully');
-      onClose();
+      closeModal();
     } catch (error) {
       toast.error(`Failed to add pulse record ${error}`);
     }
@@ -114,7 +111,7 @@ export default function PulseModal({ isOpen, onClose }: PulseModalProps) {
             <button
               type="button"
               className="btn btn-ghost"
-              onClick={onClose}
+              onClick={closeModal}
             >
               Cancel
             </button>

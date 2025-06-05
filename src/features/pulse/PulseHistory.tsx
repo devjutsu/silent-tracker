@@ -1,11 +1,13 @@
 import { PulseRecord } from '@/features/pulse/pulse';
+import { usePulseModalStore } from './pulseModalStore';
 
-export interface PulseHistoryProps {
+interface PulseHistoryProps {
   records: PulseRecord[];
-  onRecordClick: () => void;
 }
 
-export default function PulseHistory({ records, onRecordClick }: PulseHistoryProps) {
+export default function PulseHistory({ records }: PulseHistoryProps) {
+  const { openModal } = usePulseModalStore();
+
   if (records.length === 0) {
     return (
       <div className="card bg-base-100 shadow-xl mt-4">
@@ -18,7 +20,7 @@ export default function PulseHistory({ records, onRecordClick }: PulseHistoryPro
             </p>
             <button
               className="btn btn-outline btn-secondary"
-              onClick={onRecordClick}
+              onClick={openModal}
             >
               Record Your First Pulse
             </button>

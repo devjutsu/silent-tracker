@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useAuthStore } from '@/features/auth/auth';
 import { useTrackingStore } from '@/features/flow/tracking';
 import { usePulseStore } from '@/features/pulse/pulse';
@@ -27,8 +27,6 @@ export default function Main() {
     loading: trackingLoading,
     error: trackingError,
     fetchEntries,
-    startTracking,
-    stopTracking,
     purgeEntries,
   } = useTrackingStore();
   const {
@@ -39,7 +37,6 @@ export default function Main() {
     purgeRecords,
   } = usePulseStore();
   const { requestPermission, isEnabled } = useNotificationStore();
-  const [isPulseModalOpen, setIsPulseModalOpen] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -50,17 +47,6 @@ export default function Main() {
       if (!isEnabled) {
         requestPermission();
       }
-
-      // Listen for notification click events
-      const handleShowPulseModal = () => {
-        setIsPulseModalOpen(true);
-      };
-
-      window.addEventListener('showPulseModal', handleShowPulseModal);
-
-      return () => {
-        window.removeEventListener('showPulseModal', handleShowPulseModal);
-      };
     }
   }, [user, fetchEntries, fetchPulseRecords, requestPermission, isEnabled]);
 
@@ -83,15 +69,15 @@ export default function Main() {
 
   return (
     <div className="min-h-screen bg-base-200">
-      <div className="container mx-auto p-4">
-        <div className="stats shadow w-full overflow-x-auto">
+       <div className="container mx-auto p-4">
+         <div className="stats shadow w-full overflow-x-auto">
           <TodayFlow entries={entries} />
           <ActiveSession currentEntry={currentEntry} />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
           <FlowOps />
-          <PulseOps onPulseClick={() => setIsPulseModalOpen(true)} />
+          <PulseOps />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
@@ -104,12 +90,9 @@ export default function Main() {
           </div>
         </div>
 
-        <RecentActivity entries={entries} />
+        <RecentActivity />
 
-        <PulseHistory
-          records={pulseRecords}
-          onRecordClick={() => setIsPulseModalOpen(true)}
-        />
+        <PulseHistory records={pulseRecords} />
 
         {(trackingError || authError || pulseError) && (
           <div className="alert alert-dash alert-error mt-4">
@@ -117,13 +100,10 @@ export default function Main() {
           </div>
         )}
 
-        <PurgeButton onPurge={handlePurge} />
+        <PurgeButton onPurge={handlePurge} /> 
       </div>
 
-      <PulseModal
-        isOpen={isPulseModalOpen}
-        onClose={() => setIsPulseModalOpen(false)}
-      />
+      <PulseModal /> 
     </div>
   );
 }
