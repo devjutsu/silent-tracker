@@ -12,6 +12,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 - [x] Ticking timer
 - [x] Tracking state to fetch from DB
 - [x] Make avatar only show for logged in user
+- [x] Confirm purge with own dialog
 - [ ] Add focus flow convenient edit/del
 - [ ] Make Flow widget visual
 - [ ] Make Pulse widget visual
@@ -19,12 +20,12 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 - [ ] {/* <AlertDialog /> */}
 - [ ] {/* <ConfirmDialog /> */}
 - [ ] {/* <PromptDialog /> */}
-- [ ] Confirm purge with own dialog
 - [ ] Sign in with Google OAuth
 - [ ] Sign in with Facebook 
 - [ ] Webhooks and Events
 - [ ] Audit logs
 - [ ] Internationalization
+- [ ] Unify all rounded-xx classes
 
 ## DB
 ### Pulse

@@ -4,12 +4,13 @@ import { useConfirmStore } from '@/features/dialog/confirm';
 import ConfirmDialog from './ConfirmDialog';
 
 export default function ConfirmDialogWrapper() {
-  const { isOpen, message, confirm, cancel } = useConfirmStore();
+  const { isOpen, title, content, confirm, cancel } = useConfirmStore();
 
   return (
     <ConfirmDialog
       isOpen={isOpen}
-      message={message}
+      title={title}
+      content={content}
       onConfirm={confirm}
       onCancel={cancel}
     />

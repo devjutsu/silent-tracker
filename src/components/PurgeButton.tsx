@@ -16,11 +16,10 @@ export default function PurgeButton() {
     <button
       className="btn btn-error btn-outline"
       onClick={async () => {
-        const confirmed = await useConfirmStore
-          .getState()
-          .openConfirm(
-            'Are you sure you want to delete all your focus flow items and pulse records? This action cannot be undone.'
-          );
+        const confirmed = await useConfirmStore.getState().openConfirm(
+          'Delete history data?',
+          'Are you sure you want to delete all your history data? This action cannot be undone.'
+        );
         if (confirmed) {
           await handlePurge();
         }

@@ -2,20 +2,22 @@ import { create } from 'zustand';
 
 interface ConfirmDialogStore {
   isOpen: boolean;
-  message: string;
+  title: string;
+  content: string;
   resolve: ((confirmed: boolean) => void) | null;
-  openConfirm: (message: string) => Promise<boolean>;
+  openConfirm: (title: string, content: string) => Promise<boolean>;
   confirm: () => void;
   cancel: () => void;
 }
 
 export const useConfirmStore = create<ConfirmDialogStore>((set, get) => ({
   isOpen: false,
-  message: '',
+  title: '',
+  content: '',
   resolve: null,
-  openConfirm: (message) =>
+  openConfirm: (title, content) =>
     new Promise((resolve) => {
-      set({ isOpen: true, message, resolve });
+      set({ isOpen: true, title, content, resolve });
     }),
   confirm: () => {
     const { resolve } = get();

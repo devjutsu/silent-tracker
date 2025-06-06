@@ -23,14 +23,14 @@ export default function MenuModal() {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-accent-content/30 backdrop-blur-sm"
       onClick={() => setIsMenuOpen(false)}
     >
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="menu-modal-title"
-        className="card shadow-2xl rounded-box w-full max-w-xs p-6 relative animate-fade-in"
+        className="card shadow-2xl rounded-box w-full max-w-xs p-6 relative animate-fade-in bg-base-300/10"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -44,41 +44,45 @@ export default function MenuModal() {
           <Link
             href="/"
             onClick={() => setIsMenuOpen(false)}
-            className="btn btn-lg btn-ghost text-primary bg-base-200 flex gap-3 px-3 py-2 rounded-lg transition hover:bg-base-100 text-base font-medium cursor-pointer w-full"
+            className="btn btn-lg btn-ghost text-primary bg-base-200 flex gap-3 px-3 py-2 rounded-lg transition-all duration-200 ease-in-out hover:bg-base-100 hover:shadow-[0_0_8px_theme(colors.primary)] text-base font-medium w-full glow-hover"
           >
             <LayoutDashboard className="w-5 h-5 flex-shrink-0" />
             <span className="text-left">Main</span>
           </Link>
+
           {isKeepFitEnabled && (
             <Link
               href="/fit"
               onClick={() => setIsMenuOpen(false)}
-              className="btn btn-lg btn-ghost text-success bg-base-200 flex items-center gap-3 px-3 py-2 rounded-lg transition hover:bg-base-100 text-base font-medium cursor-pointer w-full"
+              className="btn btn-lg btn-ghost text-success bg-base-200 flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 ease-in-out hover:bg-base-100 hover:shadow-[0_0_8px_theme(colors.success)] text-base font-medium w-full glow-hover"
             >
               <Apple className="w-5 h-5 flex-shrink-0" />
               <span className="text-left">Fit Coach</span>
             </Link>
           )}
+
           <Link
             href="/profile"
             onClick={() => setIsMenuOpen(false)}
-            className="btn btn-lg btn-ghost text-info bg-base-200 flex items-center gap-3 px-3 py-2 rounded-lg transition hover:bg-base-100 text-base font-medium cursor-pointer w-full"
+            className="btn btn-lg btn-ghost text-info bg-base-200 flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 ease-in-out hover:bg-base-100 hover:shadow-[0_0_8px_theme(colors.info)] text-base font-medium w-full glow-hover"
           >
             <User className="w-5 h-5 flex-shrink-0" />
             <span className="text-left">Profile</span>
           </Link>
+
           <Link
             href="/settings"
             onClick={() => setIsMenuOpen(false)}
-            className="btn btn-lg btn-ghost text-secondary bg-base-200 flex items-center gap-3 px-3 py-2 rounded-lg transition hover:bg-base-100 text-base font-medium cursor-pointer w-full"
+            className="btn btn-lg btn-ghost text-secondary bg-base-200 flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 ease-in-out hover:bg-base-100 hover:shadow-[0_0_8px_theme(colors.secondary)] text-base font-medium w-full glow-hover"
           >
             <Settings className="w-5 h-5 flex-shrink-0" />
             <span className="text-left">Settings</span>
           </Link>
+
           <button
-            className="btn btn-lg btn-ghost bg-base-200 flex items-center gap-3 px-3 py-2 rounded-lg transition hover:bg-error/10 text-error text-base font-medium cursor-pointer w-full"
             onClick={handleSignOut}
             type="button"
+            className="btn btn-lg btn-ghost text-error bg-base-200 flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 ease-in-out hover:bg-error/10 hover:shadow-[0_0_8px_theme(colors.error)] text-base font-medium w-full glow-hover"
           >
             <LogOut className="w-5 h-5 flex-shrink-0" />
             <span className="text-left">Sign Out</span>

@@ -44,3 +44,11 @@ body {
   --color-secondary: #3DA4AD;
   --color-secondary-content: #0A3B59;
 }
+
+.glow-hover {
+  transition: box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.glow-hover:hover {
+  box-shadow: 0 0 8px 2px currentColor;
+}
