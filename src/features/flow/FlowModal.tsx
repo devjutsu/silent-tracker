@@ -8,10 +8,19 @@ import toast from 'react-hot-toast';
 
 export default function FlowModal() {
   const { isOpen, closeModal } = useFlowModalStore();
-  const { startFlow } = useFlowStore();
+  const { startFlow, entries } = useFlowStore();
   const { setModalOpen } = useNotificationStore();
   const [title, setTitle] = useState('');
   const [goal, setGoal] = useState('');
+
+  // Get the most recent flow entry when modal opens
+  useEffect(() => {
+    if (isOpen && entries.length > 0) {
+      const mostRecentFlow = entries[0]; // entries are already sorted by created_at desc
+      setTitle(mostRecentFlow.title || '');
+      setGoal(mostRecentFlow.goal || '');
+    }
+  }, [isOpen, entries]);
 
   useEffect(() => {
     if (isOpen) {
