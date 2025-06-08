@@ -68,9 +68,12 @@ export default function PulseHistory({ records: propRecords }: PulseHistoryProps
             <thead>
               <tr>
                 <th>Time</th>
-                <th>Focus Level</th>
+                <th>Focus</th>
+                <th>Energy</th>
                 <th>Activity</th>
+                <th>Mood</th>
                 <th>Tag</th>
+                <th>Note</th>
               </tr>
             </thead>
             <tbody>
@@ -84,7 +87,7 @@ export default function PulseHistory({ records: propRecords }: PulseHistoryProps
                           <input
                             key={level}
                             type="radio"
-                            name={`rating-${record.id}`}
+                            name={`focus-${record.id}`}
                             className="mask mask-star-2 bg-primary"
                             checked={level === record.focus_level}
                             readOnly
@@ -94,8 +97,35 @@ export default function PulseHistory({ records: propRecords }: PulseHistoryProps
                       <span>{record.focus_level}/5</span>
                     </div>
                   </td>
+                  <td>
+                    <div className="flex items-center gap-2">
+                      <div className="rating rating-sm">
+                        {[1, 2, 3, 4, 5].map((level) => (
+                          <input
+                            key={level}
+                            type="radio"
+                            name={`energy-${record.id}`}
+                            className="mask mask-star-2 bg-secondary"
+                            checked={level === record.energy_level}
+                            readOnly
+                          />
+                        ))}
+                      </div>
+                      <span>{record.energy_level}/5</span>
+                    </div>
+                  </td>
                   <td>{record.activity}</td>
+                  <td>{record.mood || '-'}</td>
                   <td>{record.tag || '-'}</td>
+                  <td>
+                    {record.note ? (
+                      <div className="tooltip" data-tip={record.note}>
+                        <span className="cursor-help">📝</span>
+                      </div>
+                    ) : (
+                      '-'
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>

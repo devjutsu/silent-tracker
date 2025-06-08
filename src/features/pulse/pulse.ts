@@ -10,6 +10,10 @@ export interface PulseRecord {
   focus_level: number;
   activity: string;
   tag: string | null;
+  energy_level: number;
+  mood: string | null;
+  note: string | null;
+  source: string | null;
 }
 
 interface PulseState {
@@ -19,7 +23,16 @@ interface PulseState {
   setRecords: (records: PulseRecord[]) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
-  addRecord: (focusLevel: number, activity: string, tag?: string, flowId?: string) => Promise<void>;
+  addRecord: (
+    focusLevel: number,
+    activity: string,
+    energyLevel: number,
+    tag?: string,
+    mood?: string,
+    note?: string,
+    flowId?: string,
+    source?: 'manual' | 'auto'
+  ) => Promise<void>;
   fetchRecords: () => Promise<void>;
   deleteRecord: (id: string) => Promise<void>;
   purgeRecords: () => Promise<void>;
@@ -33,7 +46,16 @@ export const usePulseStore = create<PulseState>((set, get) => ({
   setLoading: (loading) => set({ loading }),
   setError: (error) => set({ error }),
 
-  addRecord: async (focusLevel: number, activity: string, tag?: string, flowId?: string) => {
+  addRecord: async (
+    focusLevel: number,
+    activity: string,
+    energyLevel: number,
+    tag?: string,
+    mood?: string,
+    note?: string,
+    flowId?: string,
+    source: 'manual' | 'auto' = 'manual'
+  ) => {
     try {
       set({ loading: true, error: null });
       const { data: { user } } = await supabase.auth.getUser();
@@ -45,9 +67,13 @@ export const usePulseStore = create<PulseState>((set, get) => ({
           {
             user_id: user.id,
             focus_level: focusLevel,
+            energy_level: energyLevel,
             activity,
             tag,
+            mood,
+            note,
             flow_id: flowId || null,
+            source,
           },
         ]);
 

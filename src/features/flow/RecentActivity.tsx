@@ -37,8 +37,10 @@ export default function RecentActivity({ entries: propEntries }: RecentActivityP
             <thead>
               <tr>
                 <th>Date</th>
-                <th>Description</th>
+                <th>Title</th>
+                <th>Goal</th>
                 <th>Duration</th>
+                <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -46,6 +48,7 @@ export default function RecentActivity({ entries: propEntries }: RecentActivityP
               {entries.map((entry) => (
                 <tr key={entry.id}>
                   <td>{new Date(entry.start_time).toLocaleString()}</td>
+                  <td>{entry.title || '-'}</td>
                   <td>{entry.goal}</td>
                   <td>
                     {entry.end_time
@@ -56,6 +59,15 @@ export default function RecentActivity({ entries: propEntries }: RecentActivityP
                             60
                         )} minutes`
                       : 'In Progress'}
+                  </td>
+                  <td>
+                    {entry.is_active ? (
+                      <span className="badge badge-success">Active</span>
+                    ) : entry.interrupted ? (
+                      <span className="badge badge-error">Interrupted</span>
+                    ) : (
+                      <span className="badge badge-neutral">Completed</span>
+                    )}
                   </td>
                   <td>
                     <button className="btn btn-ghost btn-xs">Edit</button>

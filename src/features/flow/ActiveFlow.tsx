@@ -43,7 +43,16 @@ export default function ActiveFlow({ currentEntry: propCurrentEntry }: ActiveFlo
       <div className="stat-value">
         <FocusTimer startTime={currentEntry.start_time} />
       </div>
-      <div className="stat-desc">{currentEntry.goal}</div>
+      <div className="stat-desc">
+        {currentEntry.title ? (
+          <>
+            <div className="font-semibold">{currentEntry.title}</div>
+            <div className="text-sm opacity-70">{currentEntry.goal}</div>
+          </>
+        ) : (
+          currentEntry.goal
+        )}
+      </div>
     </div>
   );
 } 

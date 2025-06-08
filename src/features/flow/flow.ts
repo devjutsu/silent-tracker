@@ -9,6 +9,9 @@ export interface FlowEntry {
   end_time: string | null;
   goal: string;
   created_at: string;
+  title: string | null;
+  is_active: boolean;
+  interrupted: boolean;
 }
 
 interface FlowState {
@@ -49,7 +52,10 @@ export const useFlowStore = create<FlowState>((set, get) => ({
           {
             user_id: user.id,
             start_time: new Date().toISOString(),
-            description,
+            goal: description,
+            title: null,
+            is_active: true,
+            interrupted: false,
           },
         ])
         .select()
@@ -73,7 +79,11 @@ export const useFlowStore = create<FlowState>((set, get) => ({
 
       const { error } = await supabase
         .from('flow')
-        .update({ end_time: new Date().toISOString() })
+        .update({ 
+          end_time: new Date().toISOString(),
+          is_active: false,
+          interrupted: false,
+        })
         .eq('id', currentEntry.id);
 
       if (error) throw error;
@@ -108,12 +118,12 @@ export const useFlowStore = create<FlowState>((set, get) => ({
 
       if (error) throw error;
       
-      // Find the most recent unfinished entry (where end_time is null)
-      const activeEntry = data.find(entry => entry.end_time === null);
+      // Find the active entry
+      const activeEntry = data.find(entry => entry.is_active);
       
       set({ 
         entries: data,
-        currentEntry: activeEntry || null // Restore the active entry if found
+        currentEntry: activeEntry || null
       });
     } catch (error) {
       set({ error: error instanceof Error ? error.message : 'An error occurred' });

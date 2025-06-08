@@ -15,8 +15,9 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 - [x] Confirm purge with own dialog
 - [ ] Add focus flow convenient edit/del
 - [ ] Каждые N минут: "Как идёт фокус?" 🔥 Отлично / 🙂 Нормально / 😵 Расфокус | dropdown: чем занят? | optional tag.
-- Возможность отметить PulseRecord как "перерыв", "отвлёкся" и т.п.
-- Если не было ни одного Pulse в течение сессии — можно подсказать: "попробуй отслеживать фокус внутри сессии"
+- [ ] Автозаполнение по последней активности.
+- [ ] Возможность отметить PulseRecord как "перерыв", "отвлёкся" и т.п.
+- [ ] Если не было ни одного Pulse в течение сессии — можно подсказать: "попробуй отслеживать фокус внутри сессии"
 - [ ] Make Flow widget visual
 - [ ] Make Pulse widget visual
 - [ ] {/* <Modal /> */}
@@ -39,42 +40,38 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 ## DB
 ### Pulse
 
-```create table public.pulse (
-  id uuid primary key default gen_random_uuid(),
-  user_id uuid references auth.users not null,
-  created_at timestamp with time zone default now(),
-  focus_level integer not null check (focus_level >= 1 and focus_level <= 5),
-  activity text not null,
-  tag text
+```
+-- Таблица для FlowEntry
+CREATE TABLE flow (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL,
+  start_time TIMESTAMP NOT NULL,
+  end_time TIMESTAMP,
+  goal TEXT NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT now(),
+  title TEXT,
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  interrupted BOOLEAN NOT NULL DEFAULT FALSE
 );
 
-alter table public.pulse enable row level security;
-
-create policy "Allow user to access own pulses"
-  on public.pulse
-  for all
-  using (auth.uid() = user_id)
-  with check (auth.uid() = user_id);
-
-```
-
-### Tracking
-```
-create table public.tracking_entries (
-  id uuid primary key default gen_random_uuid(),
-  user_id uuid references auth.users not null,
-  start_time timestamp with time zone not null,
-  end_time timestamp with time zone,
-  description text not null,
-  created_at timestamp with time zone default now()
+-- Таблица для PulseRecord
+CREATE TABLE pulse (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL,
+  flow_id UUID REFERENCES flow(id) ON DELETE SET NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT now(),
+  focus_level INTEGER NOT NULL CHECK (focus_level >= 1 AND focus_level <= 10),
+  activity TEXT NOT NULL,
+  tag TEXT,
+  energy_level INTEGER NOT NULL CHECK (energy_level >= 1 AND energy_level <= 10),
+  mood TEXT,
+  note TEXT,
+  source TEXT CHECK (source IN ('manual', 'auto'))
 );
 
-alter table public.tracking_entries enable row level security;
+-- (Необязательно) Индексы для быстрого поиска по пользователю и времени
+CREATE INDEX idx_flow_user_time ON flow(user_id, start_time DESC);
+CREATE INDEX idx_pulse_user_time ON pulse(user_id, created_at DESC);
 
-create policy "Users can access their own tracking entries"
-  on public.tracking_entries
-  for all
-  using (auth.uid() = user_id)
-  with check (auth.uid() = user_id);
 
 ```

@@ -15,8 +15,11 @@ export default function PulseModal() {
   const { setModalOpen } = useNotificationStore();
   const { currentEntry } = useFlowStore();
   const [focusLevel, setFocusLevel] = useState(3);
+  const [energyLevel, setEnergyLevel] = useState(3);
   const [activity, setActivity] = useState<ActivityType>('work');
   const [tag, setTag] = useState('');
+  const [mood, setMood] = useState('');
+  const [note, setNote] = useState('');
 
   useEffect(() => {
     if (isOpen) {
@@ -37,7 +40,15 @@ export default function PulseModal() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await addRecord(focusLevel, activity, tag.trim() || undefined, currentEntry?.id);
+      await addRecord(
+        focusLevel,
+        activity,
+        energyLevel,
+        tag.trim() || undefined,
+        mood.trim() || undefined,
+        note.trim() || undefined,
+        currentEntry?.id
+      );
       toast.success('Pulse record added successfully');
       closeModal();
     } catch (error) {
@@ -56,10 +67,10 @@ export default function PulseModal() {
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-base-100 rounded-lg p-6 w-full max-w-md shadow-xl">
-        <h2 className="text-xl sm:text-2xl font-bold mb-2">Record Your Focus Level</h2>
+        <h2 className="text-xl sm:text-2xl font-bold mb-2">Record Your Pulse</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="">
-            <label className="label mr-2">
+          <div>
+            <label className="label">
               <span className="label-text">Focus Level (1-5)</span>
             </label>
             <div className="rating rating-md">
@@ -71,6 +82,24 @@ export default function PulseModal() {
                   className="mask mask-star-2 bg-primary"
                   checked={focusLevel === level}
                   onChange={() => setFocusLevel(level)}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="label">
+              <span className="label-text">Energy Level (1-5)</span>
+            </label>
+            <div className="rating rating-md">
+              {[1, 2, 3, 4, 5].map((level) => (
+                <input
+                  key={level}
+                  type="radio"
+                  name="energy-level"
+                  className="mask mask-star-2 bg-secondary"
+                  checked={energyLevel === level}
+                  onChange={() => setEnergyLevel(level)}
                 />
               ))}
             </div>
@@ -106,6 +135,32 @@ export default function PulseModal() {
               className="input input-bordered w-full"
               value={tag}
               onChange={(e) => setTag(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label className="label">
+              <span className="label-text">Mood (optional)</span>
+            </label>
+            <input
+              type="text"
+              placeholder="e.g., productive, tired, motivated"
+              className="input input-bordered w-full"
+              value={mood}
+              onChange={(e) => setMood(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label className="label">
+              <span className="label-text">Note (optional)</span>
+            </label>
+            <textarea
+              placeholder="Any additional thoughts or context..."
+              className="textarea textarea-bordered w-full"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              rows={3}
             />
           </div>
 
