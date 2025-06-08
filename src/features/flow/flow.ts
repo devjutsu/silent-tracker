@@ -1,6 +1,15 @@
 import { create } from 'zustand';
 import { supabase } from '@/lib/supabase';
 
+// Utility functions for timezone conversion
+const toLocalTime = (utcDate: string | Date): Date => {
+  const date = new Date(utcDate);
+  return new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+};
+
+const toUTCTime = (localDate: Date): string => {
+  return new Date(localDate.getTime() + localDate.getTimezoneOffset() * 60000).toISOString();
+};
 
 export interface FlowEntry {
   id: string;
@@ -119,11 +128,18 @@ export const useFlowStore = create<FlowState>((set, get) => ({
 
       if (error) throw error;
       
+      // Convert UTC timestamps to local time
+      const localData = data.map(entry => ({
+        ...entry,
+        start_time: toLocalTime(entry.start_time).toISOString(),
+        end_time: entry.end_time ? toLocalTime(entry.end_time).toISOString() : null,
+      }));
+      
       // Find the active entry
-      const activeEntry = data.find(entry => entry.is_active);
+      const activeEntry = localData.find(entry => entry.is_active);
       
       set({ 
-        entries: data,
+        entries: localData,
         currentEntry: activeEntry || null
       });
     } catch (error) {
