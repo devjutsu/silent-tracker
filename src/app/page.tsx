@@ -8,7 +8,7 @@ import { usePulseStore } from '@/features/pulse/pulse';
 import { useNotificationStore } from '@/features/notifications/notifications';
 import Login from '@/features/auth/Login';
 
-import RecentActivity from '@/features/flow/RecentActivity';
+import FlowList from '@/features/flow/FlowList';
 import PulseHistory from '@/features/pulse/PulseHistory';
 import TodayFlow from '@/features/flow/TodayFlow';
 import ActiveFlow from '@/features/flow/ActiveFlow';
@@ -80,7 +80,7 @@ export default function Home() {
           </div>
         </div>
 
-        <RecentActivity />
+        <FlowList />
         <PulseHistory />
 
         {(trackingError || authError || pulseError) && (

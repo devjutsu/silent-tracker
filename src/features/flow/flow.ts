@@ -25,6 +25,7 @@ interface FlowState {
   setError: (error: string | null) => void;
   startFlow: (goal?: string, title?: string) => Promise<void>;
   stopFlow: () => Promise<void>;
+  updateEntry: (id: string, updates: Partial<FlowEntry>) => Promise<void>;
   fetchEntries: () => Promise<void>;
   deleteEntry: (id: string) => Promise<void>;
   purgeEntries: () => Promise<void>;
@@ -162,6 +163,23 @@ export const useFlowStore = create<FlowState>((set, get) => ({
 
       if (error) throw error;
       set({ entries: [], currentEntry: null });
+    } catch (error) {
+      set({ error: error instanceof Error ? error.message : 'An error occurred' });
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  updateEntry: async (id: string, updates: Partial<FlowEntry>) => {
+    try {
+      set({ loading: true, error: null });
+      const { error } = await supabase
+        .from('flow')
+        .update(updates)
+        .eq('id', id);
+
+      if (error) throw error;
+      await get().fetchEntries();
     } catch (error) {
       set({ error: error instanceof Error ? error.message : 'An error occurred' });
     } finally {
