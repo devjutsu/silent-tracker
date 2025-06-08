@@ -6,6 +6,7 @@ import MenuModal from '@/features/menu/MenuModal';
 import Header from '@/components/Header';
 import Bakery from '@/features/bakery/Bakery';
 import PulseModal from '@/features/pulse/PulseModal';
+import FlowModal from '@/features/flow/FlowModal';
 import ConfirmDialogWrapper from '@/features/dialog/ConfirmDialogWrapper';
 
 const geistSans = Geist({
@@ -50,7 +51,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" data-theme="light">
       <head>
         <link rel="icon" href="/favicon/favicon.ico" sizes="any" />
         <link
@@ -75,6 +76,7 @@ export default function RootLayout({
         <ThemeProvider>
           <MenuModal />
           <PulseModal />
+          <FlowModal />
           <ConfirmDialogWrapper />
           {/* <Modal /> */}
           {children}

@@ -47,7 +47,7 @@ CREATE TABLE flow (
   user_id UUID NOT NULL,
   start_time TIMESTAMP NOT NULL,
   end_time TIMESTAMP,
-  goal TEXT NOT NULL,
+  goal TEXT,
   created_at TIMESTAMP NOT NULL DEFAULT now(),
   title TEXT,
   is_active BOOLEAN NOT NULL DEFAULT TRUE,

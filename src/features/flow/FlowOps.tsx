@@ -1,5 +1,6 @@
 import { CirclePause, CirclePlay } from 'lucide-react';
 import { useFlowStore, FlowEntry } from './flow';
+import { useFlowModalStore } from './flowModalStore';
 import toast from 'react-hot-toast';
 
 interface FlowOpsProps {
@@ -7,40 +8,39 @@ interface FlowOpsProps {
 }
 
 export default function FlowOps({ currentEntry: propCurrentEntry }: FlowOpsProps) {
-  const { currentEntry: storeCurrentEntry, startFlow, stopFlow } = useFlowStore();
+  const { currentEntry: storeCurrentEntry, stopFlow } = useFlowStore();
+  const { openModal } = useFlowModalStore();
   const currentEntry = propCurrentEntry ?? storeCurrentEntry;
 
-  const handleFlow = async () => {
-    if (currentEntry) {
+  const handleStop = async () => {
+    try {
       await stopFlow();
-      toast('Focus flow stopped');
-    } else {
-      await startFlow('New focus flow session');
-      toast('Focus flow started');
+      toast.success('Flow stopped successfully');
+    } catch (error) {
+      toast.error(`Failed to stop flow: ${error}`);
     }
   };
 
   return (
     <div className="card bg-base-100 shadow-xl">
       <div className="card-body">
-        <button
-          className={`btn btn-lg ${
-            currentEntry ? 'btn-warning' : 'btn-primary'
-          }`}
-          onClick={handleFlow}
-        >
-          {currentEntry ? (
-            <>
-              <CirclePause />
-              Stop Focus
-            </>
-          ) : (
-            <>
-              <CirclePlay size={32} />
-              Focus Flow
-            </>
-          )}
-        </button>
+        {currentEntry ? (
+          <button
+            className="btn btn-lg btn-warning"
+            onClick={handleStop}
+          >
+            <CirclePause />
+            Stop Flow
+          </button>
+        ) : (
+          <button
+            className="btn btn-lg btn-primary"
+            onClick={openModal}
+          >
+            <CirclePlay />
+            Start Flow
+          </button>
+        )}
       </div>
     </div>
   );
