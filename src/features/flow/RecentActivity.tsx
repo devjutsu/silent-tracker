@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
-import { useTrackingStore } from '@/features/flow/tracking';
-import { TrackingEntry } from '@/features/flow/tracking';
+import { useFlowStore } from '@/features/flow/flow';
+import { FlowEntry } from '@/features/flow/flow';
 
 interface RecentActivityProps {
-  entries?: TrackingEntry[];
+  entries?: FlowEntry[];
 }
 
 export default function RecentActivity({ entries: propEntries }: RecentActivityProps) {
-  const { entries: storeEntries, fetchEntries, loading } = useTrackingStore();
+  const { entries: storeEntries, fetchEntries, loading } = useFlowStore();
   const entries = propEntries || storeEntries;
 
   useEffect(() => {
@@ -46,7 +46,7 @@ export default function RecentActivity({ entries: propEntries }: RecentActivityP
               {entries.map((entry) => (
                 <tr key={entry.id}>
                   <td>{new Date(entry.start_time).toLocaleString()}</td>
-                  <td>{entry.description}</td>
+                  <td>{entry.goal}</td>
                   <td>
                     {entry.end_time
                       ? `${Math.round(

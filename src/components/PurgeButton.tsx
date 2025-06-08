@@ -1,10 +1,10 @@
 import { useConfirmStore } from '@/features/dialog/confirm';
-import { useTrackingStore } from '@/features/flow/tracking';
+import { useFlowStore } from '@/features/flow/flow';
 import { usePulseStore } from '@/features/pulse/pulse';
 import toast from 'react-hot-toast';
 
 export default function PurgeButton() {
-  const { purgeEntries } = useTrackingStore();
+  const { purgeEntries } = useFlowStore();
   const { purgeRecords } = usePulseStore();
 
   const handlePurge = async () => {

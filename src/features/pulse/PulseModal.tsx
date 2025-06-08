@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { usePulseStore } from '@/features/pulse/pulse';
 import { useNotificationStore } from '@/features/notifications/notifications';
 import { usePulseModalStore } from './pulseModalStore';
+import { useFlowStore } from '@/features/flow/flow';
 import toast from 'react-hot-toast';
 
 type ActivityType = 'work' | 'study' | 'rest' | 'procrastination' | 'fitness';
@@ -12,6 +13,7 @@ export default function PulseModal() {
   const { isOpen, closeModal } = usePulseModalStore();
   const { addRecord } = usePulseStore();
   const { setModalOpen } = useNotificationStore();
+  const { currentEntry } = useFlowStore();
   const [focusLevel, setFocusLevel] = useState(3);
   const [activity, setActivity] = useState<ActivityType>('work');
   const [tag, setTag] = useState('');
@@ -35,7 +37,7 @@ export default function PulseModal() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await addRecord(focusLevel, activity, tag.trim() || undefined);
+      await addRecord(focusLevel, activity, tag.trim() || undefined, currentEntry?.id);
       toast.success('Pulse record added successfully');
       closeModal();
     } catch (error) {

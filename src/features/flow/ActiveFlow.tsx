@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
-import { useTrackingStore } from '@/features/flow/tracking';
-import { TrackingEntry } from '@/features/flow/tracking';
+import { useFlowStore } from '@/features/flow/flow';
+import { FlowEntry } from '@/features/flow/flow';
 import FocusTimer from '@/features/flow/FocusTimer';
 
-interface ActiveSessionProps {
-  currentEntry?: TrackingEntry | null;
+interface ActiveFlowProps {
+  currentEntry?: FlowEntry | null;
 }
 
-export default function ActiveSession({ currentEntry: propCurrentEntry }: ActiveSessionProps) {
-  const { currentEntry: storeCurrentEntry, fetchEntries, loading } = useTrackingStore();
+export default function ActiveFlow({ currentEntry: propCurrentEntry }: ActiveFlowProps) {
+  const { currentEntry: storeCurrentEntry, fetchEntries, loading } = useFlowStore();
   const currentEntry = propCurrentEntry ?? storeCurrentEntry;
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export default function ActiveSession({ currentEntry: propCurrentEntry }: Active
   if (loading) {
     return (
       <div className="stat">
-        <div className="stat-title">Active Session</div>
+        <div className="stat-title">Active Flow</div>
         <div className="stat-value">
           <span className="loading loading-spinner loading-sm"></span>
         </div>
@@ -31,7 +31,7 @@ export default function ActiveSession({ currentEntry: propCurrentEntry }: Active
   if (!currentEntry) {
     return (
       <div className="stat">
-        <div className="stat-title">Active Session</div>
+        <div className="stat-title">Active Flow</div>
         <div className="stat-value">—</div>
       </div>
     );
@@ -39,11 +39,11 @@ export default function ActiveSession({ currentEntry: propCurrentEntry }: Active
 
   return (
     <div className="stat">
-      <div className="stat-title">Active Session</div>
+      <div className="stat-title">Active Flow</div>
       <div className="stat-value">
         <FocusTimer startTime={currentEntry.start_time} />
       </div>
-      <div className="stat-desc">{currentEntry.description}</div>
+      <div className="stat-desc">{currentEntry.goal}</div>
     </div>
   );
 } 

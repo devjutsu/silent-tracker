@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
-import { useTrackingStore } from '@/features/flow/tracking';
-import { TrackingEntry } from '@/features/flow/tracking';
+import { useFlowStore } from '@/features/flow/flow';
+import { FlowEntry } from '@/features/flow/flow';
 
 interface TodayFlowProps {
-  entries?: TrackingEntry[];
+  entries?: FlowEntry[];
 }
 
 export default function TodayFlow({ entries: propEntries }: TodayFlowProps) {
-  const { entries: storeEntries, fetchEntries, loading } = useTrackingStore();
+  const { entries: storeEntries, fetchEntries, loading } = useFlowStore();
   const entries = propEntries || storeEntries;
 
   useEffect(() => {
@@ -19,7 +19,7 @@ export default function TodayFlow({ entries: propEntries }: TodayFlowProps) {
   if (loading) {
     return (
       <div className="stat">
-        <div className="stat-title">Today Sessions</div>
+        <div className="stat-title">Flow Today</div>
         <div className="stat-value">
           <span className="loading loading-spinner loading-sm"></span>
         </div>
@@ -29,7 +29,7 @@ export default function TodayFlow({ entries: propEntries }: TodayFlowProps) {
 
   return (
     <div className="stat">
-      <div className="stat-title">Today Sessions</div>
+      <div className="stat-title">Flow Today</div>
       <div className="stat-value">{entries.length}</div>
     </div>
   );

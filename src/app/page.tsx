@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useEffect } from 'react';
 import { useAuthStore } from '@/features/auth/auth';
-import { useTrackingStore } from '@/features/flow/tracking';
+import { useFlowStore } from '@/features/flow/flow';
 import { usePulseStore } from '@/features/pulse/pulse';
 import { useNotificationStore } from '@/features/notifications/notifications';
 import Login from '@/features/auth/Login';
@@ -11,7 +11,7 @@ import Login from '@/features/auth/Login';
 import RecentActivity from '@/features/flow/RecentActivity';
 import PulseHistory from '@/features/pulse/PulseHistory';
 import TodayFlow from '@/features/flow/TodayFlow';
-import ActiveSession from '@/features/flow/ActiveSession';
+import ActiveFlow from '@/features/flow/ActiveFlow';
 import FlowOps from '@/features/flow/FlowOps';
 import PulseOps from '@/features/pulse/PulseOps';
 import CaloryWidget from '@/features/calory/CaloryWidget';
@@ -21,7 +21,7 @@ import Header from '@/components/Header';
 
 export default function Home() {
   const { user, error: authError } = useAuthStore();
-  const { error: trackingError, fetchEntries } = useTrackingStore();
+  const { error: trackingError, fetchEntries } = useFlowStore();
   const { error: pulseError, fetchRecords: fetchPulseRecords } =
     usePulseStore();
   const { requestPermission, isEnabled } = useNotificationStore();
@@ -62,7 +62,7 @@ export default function Home() {
       <div className="container mx-auto p-4">
         <div className="stats shadow w-full overflow-x-auto">
           <TodayFlow />
-          <ActiveSession />
+          <ActiveFlow />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">

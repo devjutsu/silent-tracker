@@ -2,32 +2,32 @@ import { create } from 'zustand';
 import { supabase } from '@/lib/supabase';
 
 
-export interface TrackingEntry {
+export interface FlowEntry {
   id: string;
   user_id: string;
   start_time: string;
   end_time: string | null;
-  description: string;
+  goal: string;
   created_at: string;
 }
 
-interface TrackingState {
-  entries: TrackingEntry[];
-  currentEntry: TrackingEntry | null;
+interface FlowState {
+  entries: FlowEntry[];
+  currentEntry: FlowEntry | null;
   loading: boolean;
   error: string | null;
-  setEntries: (entries: TrackingEntry[]) => void;
-  setCurrentEntry: (entry: TrackingEntry | null) => void;
+  setEntries: (entries: FlowEntry[]) => void;
+  setCurrentEntry: (entry: FlowEntry | null) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
-  startTracking: (description: string) => Promise<void>;
-  stopTracking: () => Promise<void>;
+  startFlow: (description: string) => Promise<void>;
+  stopFlow: () => Promise<void>;
   fetchEntries: () => Promise<void>;
   deleteEntry: (id: string) => Promise<void>;
   purgeEntries: () => Promise<void>;
 }
 
-export const useTrackingStore = create<TrackingState>((set, get) => ({
+export const useFlowStore = create<FlowState>((set, get) => ({
   entries: [],
   currentEntry: null,
   loading: false,
@@ -37,14 +37,14 @@ export const useTrackingStore = create<TrackingState>((set, get) => ({
   setLoading: (loading) => set({ loading }),
   setError: (error) => set({ error }),
 
-  startTracking: async (description: string) => {
+  startFlow: async (description: string) => {
     try {
       set({ loading: true, error: null });
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
 
       const { data, error } = await supabase
-        .from('tracking_entries')
+        .from('flow')
         .insert([
           {
             user_id: user.id,
@@ -65,14 +65,14 @@ export const useTrackingStore = create<TrackingState>((set, get) => ({
     }
   },
 
-  stopTracking: async () => {
+  stopFlow: async () => {
     try {
       set({ loading: true, error: null });
       const { currentEntry } = get();
-      if (!currentEntry) throw new Error('No active tracking session');
+      if (!currentEntry) throw new Error('No active focus flow session');
 
       const { error } = await supabase
-        .from('tracking_entries')
+        .from('flow')
         .update({ end_time: new Date().toISOString() })
         .eq('id', currentEntry.id);
 
@@ -99,7 +99,7 @@ export const useTrackingStore = create<TrackingState>((set, get) => ({
       tomorrow.setDate(tomorrow.getDate() + 1);
 
       const { data, error } = await supabase
-        .from('tracking_entries')
+        .from('flow')
         .select('*')
         .eq('user_id', user.id)
         .gte('start_time', today.toISOString())
@@ -126,7 +126,7 @@ export const useTrackingStore = create<TrackingState>((set, get) => ({
     try {
       set({ loading: true, error: null });
       const { error } = await supabase
-        .from('tracking_entries')
+        .from('flow')
         .delete()
         .eq('id', id);
 
@@ -146,7 +146,7 @@ export const useTrackingStore = create<TrackingState>((set, get) => ({
       if (!user) throw new Error('User not authenticated');
 
       const { error } = await supabase
-        .from('tracking_entries')
+        .from('flow')
         .delete()
         .eq('user_id', user.id);
 

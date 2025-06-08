@@ -14,6 +14,9 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 - [x] Make avatar only show for logged in user
 - [x] Confirm purge with own dialog
 - [ ] Add focus flow convenient edit/del
+- [ ] Каждые N минут: "Как идёт фокус?" 🔥 Отлично / 🙂 Нормально / 😵 Расфокус | dropdown: чем занят? | optional tag.
+- Возможность отметить PulseRecord как "перерыв", "отвлёкся" и т.п.
+- Если не было ни одного Pulse в течение сессии — можно подсказать: "попробуй отслеживать фокус внутри сессии"
 - [ ] Make Flow widget visual
 - [ ] Make Pulse widget visual
 - [ ] {/* <Modal /> */}
@@ -26,6 +29,12 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 - [ ] Audit logs
 - [ ] Internationalization
 - [ ] Unify all rounded-xx classes
+
+- [ ] Распространение
+- [ ] Платная подписка
+- [ ] Пуш нотификации
+- [ ] Оповещения емэйл
+
 
 ## DB
 ### Pulse
