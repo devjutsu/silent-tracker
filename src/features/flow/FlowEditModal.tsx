@@ -5,6 +5,7 @@ import { useFlowStore, FlowEntry } from '@/features/flow/flow';
 import { useNotificationStore } from '@/features/notifications/notifications';
 import { useFlowEditModalStore } from './flowEditModalStore';
 import toast from 'react-hot-toast';
+import { useConfirmStore } from '@/features/dialog/confirm';
 
 interface FlowEditModalProps {
   entry: FlowEntry;
@@ -16,6 +17,7 @@ export default function FlowEditModal({ entry }: FlowEditModalProps) {
   const { setModalOpen } = useNotificationStore();
   const [title, setTitle] = useState(entry.title || '');
   const [goal, setGoal] = useState(entry.goal || '');
+  const confirm = useConfirmStore();
 
   useEffect(() => {
     if (isOpen) {
@@ -37,6 +39,11 @@ export default function FlowEditModal({ entry }: FlowEditModalProps) {
   if (!isOpen) return null;
 
   const handleDelete = async () => {
+    const confirmed = await confirm.openConfirm(
+      'Delete Flow Entry',
+      'Are you sure you want to delete this flow entry? This action cannot be undone.'
+    );
+    if (!confirmed) return;
     try {
       await deleteEntry(entry.id);
       toast.success('Flow entry deleted successfully');
@@ -60,8 +67,14 @@ export default function FlowEditModal({ entry }: FlowEditModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-base-100 rounded-lg p-6 w-full max-w-md shadow-xl">
+    <div
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      onClick={closeModal}
+    >
+      <div
+        className="bg-base-100 rounded-lg p-6 w-full max-w-md shadow-xl"
+        onClick={e => e.stopPropagation()}
+      >
         <h2 className="text-xl sm:text-2xl font-bold mb-2">Edit Flow Entry</h2>
         <div className="space-y-4">
           <div>
@@ -90,25 +103,25 @@ export default function FlowEditModal({ entry }: FlowEditModalProps) {
             />
           </div>
 
-          <div className="flex justify-between items-center mt-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:justify-between items-center mt-6">
             <button
               type="button"
-              className="btn btn-error"
+              className="btn btn-error w-full sm:w-auto"
               onClick={handleDelete}
             >
               Delete Entry
             </button>
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
               <button
                 type="button"
-                className="btn btn-ghost"
+                className="btn btn-ghost w-full sm:w-auto"
                 onClick={closeModal}
               >
                 Cancel
               </button>
               <button
                 type="button"
-                className="btn btn-primary"
+                className="btn btn-primary w-full sm:w-auto"
                 onClick={handleSave}
               >
                 Save Changes
