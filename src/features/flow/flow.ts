@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { supabase } from '@/lib/supabase';
+import { useNotificationStore } from '@/features/notifications/notifications';
 
 // Utility functions for timezone conversion
 const toLocalTime = (utcDate: string | Date): Date => {
@@ -97,6 +98,10 @@ export const useFlowStore = create<FlowState>((set, get) => ({
         .eq('id', currentEntry.id);
 
       if (error) throw error;
+      
+      // Stop notifications when Flow is stopped
+      useNotificationStore.getState().stopNotifications();
+      
       set({ currentEntry: null });
       await get().fetchEntries();
     } catch (error) {
