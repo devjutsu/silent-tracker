@@ -35,6 +35,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 - [ ] Платная подписка
 - [ ] Пуш нотификации
 - [ ] Оповещения емэйл
+- [ ] Wheel of Life (switch to bars also)
 
 
 ## DB

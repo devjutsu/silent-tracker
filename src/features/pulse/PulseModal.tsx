@@ -10,7 +10,7 @@ import toast from 'react-hot-toast';
 type ActivityType = 'work' | 'study' | 'rest' | 'procrastination' | 'fitness';
 
 export default function PulseModal() {
-  const { isOpen, closeModal } = usePulseModalStore();
+  const { isOpen, closeModal, openModal } = usePulseModalStore();
   const { addRecord } = usePulseStore();
   const { setModalOpen } = useNotificationStore();
   const { currentEntry } = useFlowStore();
@@ -34,6 +34,18 @@ export default function PulseModal() {
       setModalOpen(false);
     };
   }, [isOpen, setModalOpen]);
+
+  // Add event listener for showPulseModal event
+  useEffect(() => {
+    const handleShowPulseModal = () => {
+      openModal();
+    };
+
+    window.addEventListener('showPulseModal', handleShowPulseModal);
+    return () => {
+      window.removeEventListener('showPulseModal', handleShowPulseModal);
+    };
+  }, [openModal]);
 
   if (!isOpen) return null;
 
