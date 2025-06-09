@@ -38,24 +38,24 @@ export default function PulseHistory({ records: propRecords }: PulseHistoryProps
   });
 
   if (todayRecords.length === 0) {
-    return (
-      <div className="card bg-base-100 shadow-xl mt-4">
-        <div className="card-body">
-          <div className="flex flex-col items-center justify-center text-center">
-            <div className="text-4xl">📊</div>
-            <h3 className="text-lg font-semibold">No records today</h3>
-            <p className="text-base-content/70 mb-4">
-              Start tracking your focus levels to see your history here.
-            </p>
-            <button
-              className="btn btn-outline btn-secondary"
-              onClick={openModal}
-            >
-              Record Your First Pulse
-            </button>
-          </div>
-        </div>
-      </div>
+    return (<></>
+      // <div className="card bg-base-100 shadow-xl mt-4">
+      //   <div className="card-body">
+      //     <div className="flex flex-col items-center justify-center text-center">
+      //       <div className="text-4xl">📊</div>
+      //       <h3 className="text-lg font-semibold">No records today</h3>
+      //       <p className="text-base-content/70 mb-4">
+      //         Start tracking your focus levels to see your history here.
+      //       </p>
+      //       <button
+      //         className="btn btn-outline btn-secondary"
+      //         onClick={openModal}
+      //       >
+      //         Record Your First Pulse
+      //       </button>
+      //     </div>
+      //   </div>
+      // </div>
     );
   }
 

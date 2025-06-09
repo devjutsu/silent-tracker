@@ -29,7 +29,27 @@ export default function FlowList({ entries: propEntries }: FlowListProps) {
     );
   }
 
-  if (entries.length === 0) return null;
+  if (entries.length === 0) {
+    return (
+      <div className="card bg-base-100 shadow-xl mt-4">
+        <div className="card-body">
+          <div className="flex flex-col items-center justify-center text-center">
+            <div className="text-4xl">⏳</div>
+            <h3 className="text-lg font-semibold">No Flows Today</h3>
+            <p className="text-base-content/70 mb-4">
+              Start tracking your focus sessions to see your history here.
+            </p>
+            <button
+              className="btn btn-outline btn-secondary"
+              onClick={() => openModal()}
+            >
+              Start Your First Flow
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const handleEdit = (entry: FlowEntry) => {
     setSelectedEntry(entry);
