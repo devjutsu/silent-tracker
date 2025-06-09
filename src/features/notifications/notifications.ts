@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { useFlowStore } from '@/features/flow/flow';
 
 interface NotificationState {
   permission: NotificationPermission;
@@ -127,11 +128,26 @@ export const useNotificationStore = create<NotificationState>()(
            return;
         }
 
+        // Check if Flow is running
+        const flowStore = useFlowStore.getState();
+        if (!flowStore.currentEntry) {
+          console.log('Cannot start timer: Flow is not running');
+          return;
+        }
+
         console.log(`Starting new notification timer with interval ${get().notificationInterval} seconds 🍎`);
         const id = setInterval(() => {
           // Re-check conditions inside interval just in case
           if (Notification.permission !== 'granted' || !get().isEnabled || get().isModalOpen) {
             console.log('Conditions changed during interval, stopping timer.');
+            get().stopNotifications();
+            return;
+          }
+
+          // Re-check if Flow is still running
+          const currentFlowStore = useFlowStore.getState();
+          if (!currentFlowStore.currentEntry) {
+            console.log('Flow is no longer running, stopping timer.');
             get().stopNotifications();
             return;
           }
