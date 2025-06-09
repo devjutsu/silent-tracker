@@ -60,7 +60,7 @@ export const useNotificationStore = create<NotificationState>()(
           } else {
               console.log('Notifications not enabled or permitted, not restarting timer.');
           }
-        } else if (isOpen && get().intervalId) {
+        } else {
           // If modal is opened and timer is running, stop it
           console.log('Modal opened, stopping notification timer.');
           get().stopNotifications();
@@ -135,6 +135,12 @@ export const useNotificationStore = create<NotificationState>()(
           return;
         }
 
+        // Check if we already have a timer running
+        if (get().intervalId !== null) {
+          console.log('Timer is already running, not starting a new one');
+          return;
+        }
+
         console.log(`Starting new notification timer with interval ${get().notificationInterval} seconds 🍎`);
         const id = setInterval(() => {
           // Re-check conditions inside interval just in case
@@ -161,6 +167,7 @@ export const useNotificationStore = create<NotificationState>()(
           notification.onclick = () => {
             console.log('Notification clicked, opening modal and stopping timer.');
             window.focus();
+            notification.close();
             // Dispatch a custom event that the app can listen to
             window.dispatchEvent(new CustomEvent('showPulseModal'));
              // The timer is stopped below, after sending the notification
