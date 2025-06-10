@@ -4,9 +4,10 @@ import { useEffect, useState } from 'react';
 
 type Props = {
   startTime: string | Date;
+  size?: 'sm' | 'default';
 };
 
-export default function FocusTimer({ startTime }: Props) {
+export default function FocusTimer({ startTime, size = 'default' }: Props) {
   const [elapsed, setElapsed] = useState('00:00:00');
 
   useEffect(() => {
@@ -30,10 +31,10 @@ export default function FocusTimer({ startTime }: Props) {
 
   return (
     <div className="flex items-center space-x-3">
-      <span className="w-2 h-2 rounded-full bg-lime-500 animate-ping" />
-      <span className="text-xl font-mono tracking-wide text-primary">
+      <span className={`${size === 'sm' ? 'text-base' : 'text-xl'} font-mono tracking-wide text-primary`}>
         {elapsed}
       </span>
+      <span className={`${size === 'sm' ? 'w-1.5 h-1.5' : 'w-2 h-2'} rounded-full bg-lime-500 animate-ping`} />
     </div>
   );
 }

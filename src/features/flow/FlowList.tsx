@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useFlowStore, FlowEntry } from '@/features/flow/flow';
 import { useFlowEditModalStore } from './flowEditModalStore';
 import FlowEditModal from './FlowEditModal';
+import FocusTimer from './FocusTimer';
 
 interface FlowListProps {
   entries?: FlowEntry[];
@@ -87,7 +88,9 @@ export default function FlowList({ entries: propEntries }: FlowListProps) {
                               1000 /
                               60
                           )} minutes`
-                        : 'In Progress'}
+                        : entry.is_active ? (
+                            <FocusTimer startTime={entry.start_time} size="sm" />
+                          ) : 'In Progress'}
                     </td>
                     <td>
                       {entry.is_active ? (
