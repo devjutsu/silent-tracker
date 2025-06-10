@@ -79,7 +79,7 @@ export default function PulseModal() {
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-base-100 rounded-lg p-6 w-full max-w-md shadow-xl">
-        <h2 className="text-xl sm:text-2xl font-bold mb-2">Record Your Pulse</h2>
+        <h2 className="text-xl sm:text-2xl font-bold mb-2">How is your focus?</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="label">

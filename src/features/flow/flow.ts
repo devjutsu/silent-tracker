@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { supabase } from '@/lib/supabase';
 import { useNotificationStore } from '@/features/notifications/notifications';
+import { usePulseModalStore } from '@/features/pulse/pulseModalStore';
 
 // Utility functions for timezone conversion
 const toLocalTime = (utcDate: string | Date): Date => {
@@ -75,6 +76,9 @@ export const useFlowStore = create<FlowState>((set, get) => ({
       if (error) throw error;
       set({ currentEntry: data });
       await get().fetchEntries();
+      
+      // Open PulseModal after successfully starting flow
+      usePulseModalStore.getState().openModal();
     } catch (error) {
       set({ error: error instanceof Error ? error.message : 'An error occurred' });
     } finally {

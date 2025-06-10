@@ -35,7 +35,7 @@ export default function FlowList({ entries: propEntries }: FlowListProps) {
         <div className="card-body">
           <div className="flex flex-col items-center justify-center text-center">
             <div className="text-4xl">⏳</div>
-            <h3 className="text-lg font-semibold">No Flows Today</h3>
+            <h3 className="text-lg font-semibold">No Flows Recorded Today</h3>
             <p className="text-base-content/70 mb-4">
               Start tracking your focus sessions to see your history here.
             </p>
