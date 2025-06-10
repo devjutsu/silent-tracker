@@ -70,19 +70,30 @@ export default function PulseModal() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="label">
-              <span className="label-text">Focus Level (1-5)</span>
+              <span className="label-text">Focus Level</span>
             </label>
-            <div className="rating rating-md">
-              {[1, 2, 3, 4, 5].map((level) => (
-                <input
-                  key={level}
-                  type="radio"
-                  name="focus-level"
-                  className="mask mask-star-2 bg-primary"
-                  checked={focusLevel === level}
-                  onChange={() => setFocusLevel(level)}
-                />
-              ))}
+            <div className="flex gap-4">
+              <button
+                type="button"
+                className={`btn btn-outline flex-1 ${focusLevel === 1 ? 'btn-primary' : ''}`}
+                onClick={() => setFocusLevel(1)}
+              >
+                😵 Distracted
+              </button>
+              <button
+                type="button"
+                className={`btn btn-outline flex-1 ${focusLevel === 3 ? 'btn-primary' : ''}`}
+                onClick={() => setFocusLevel(3)}
+              >
+                🙂 OK
+              </button>
+              <button
+                type="button"
+                className={`btn btn-outline flex-1 ${focusLevel === 5 ? 'btn-primary' : ''}`}
+                onClick={() => setFocusLevel(5)}
+              >
+                🔥 Great
+              </button>
             </div>
           </div>
 
@@ -90,13 +101,13 @@ export default function PulseModal() {
             <label className="label">
               <span className="label-text">Energy Level (1-5)</span>
             </label>
-            <div className="rating rating-md">
+            <div className="rating rating-md ml-2">
               {[1, 2, 3, 4, 5].map((level) => (
                 <input
                   key={level}
                   type="radio"
                   name="energy-level"
-                  className="mask mask-star-2 bg-secondary"
+                  className="mask mask-star-2 bg-warning"
                   checked={energyLevel === level}
                   onChange={() => setEnergyLevel(level)}
                 />
