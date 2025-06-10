@@ -80,12 +80,29 @@ export default function Settings() {
         icon: '/favicon.ico',
       });
 
+      // Add to active notifications
+      useNotificationStore.getState().setActiveNotifications([
+        ...useNotificationStore.getState().activeNotifications,
+        notification
+      ]);
+
       notification.onclick = () => {
         console.log('Notification clicked, opening modal and stopping timer.');
         window.focus();
         notification.close();
+        // Remove from active notifications
+        useNotificationStore.getState().setActiveNotifications(
+          useNotificationStore.getState().activeNotifications.filter(n => n !== notification)
+        );
         // Dispatch a custom event that the app can listen to
         window.dispatchEvent(new CustomEvent('showPulseModal'));
+      };
+
+      // Add close event listener to remove from active notifications when closed
+      notification.onclose = () => {
+        useNotificationStore.getState().setActiveNotifications(
+          useNotificationStore.getState().activeNotifications.filter(n => n !== notification)
+        );
       };
     } else {
       toast.error('Notifications not permitted');

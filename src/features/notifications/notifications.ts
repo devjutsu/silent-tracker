@@ -9,12 +9,14 @@ interface NotificationState {
   lastNotificationTime: number | null;
   isModalOpen: boolean;
   notificationInterval: number;
+  activeNotifications: Notification[];
   setPermission: (permission: NotificationPermission) => void;
   setIntervalId: (id: ReturnType<typeof setInterval> | null) => void;
   setIsEnabled: (enabled: boolean) => void;
   setLastNotificationTime: (time: number | null) => void;
   setModalOpen: (isOpen: boolean) => void;
   setNotificationInterval: (interval: number) => void;
+  setActiveNotifications: (notifications: Notification[]) => void;
   requestPermission: () => Promise<void>;
   startNotifications: () => void;
   stopNotifications: () => void;
@@ -31,6 +33,7 @@ export const useNotificationStore = create<NotificationState>()(
       lastNotificationTime: null,
       isModalOpen: false,
       notificationInterval: 60,
+      activeNotifications: [],
 
       setPermission: (permission) => set({ permission }),
       setIntervalId: (id) => set({ intervalId: id }),
@@ -117,7 +120,6 @@ export const useNotificationStore = create<NotificationState>()(
 
       startNotifications: () => {
         // Always clear any existing timer before starting a new one
-        // Use stopNotifications to ensure intervalId is set to null
         get().stopNotifications(); 
 
         // Check conditions before starting the timer
@@ -162,13 +164,26 @@ export const useNotificationStore = create<NotificationState>()(
             icon: '/favicon.ico',
           });
 
+          // Add to active notifications
+          set(state => ({ activeNotifications: [...state.activeNotifications, notification] }));
+
           notification.onclick = () => {
             console.log('Notification clicked, opening modal and stopping timer.');
             window.focus();
             notification.close();
+            // Remove from active notifications
+            set(state => ({ 
+              activeNotifications: state.activeNotifications.filter(n => n !== notification)
+            }));
             // Dispatch a custom event that the app can listen to
             window.dispatchEvent(new CustomEvent('showPulseModal'));
-             // The timer is stopped below, after sending the notification
+          };
+
+          // Add close event listener to remove from active notifications when closed
+          notification.onclose = () => {
+            set(state => ({ 
+              activeNotifications: state.activeNotifications.filter(n => n !== notification)
+            }));
           };
 
           set({ lastNotificationTime: Date.now() });
@@ -194,31 +209,25 @@ export const useNotificationStore = create<NotificationState>()(
 
       closeAllNotifications: () => {
         // Close all active notifications
-        if ('Notification' in window) {
-          // Get all active notifications and close them
-          const activeNotifications = document.querySelectorAll('.notification');
-          activeNotifications.forEach(notification => {
-            if (notification instanceof Notification) {
-              notification.close();
-            }
-          });
-        }
+        const { activeNotifications } = get();
+        activeNotifications.forEach(notification => {
+          notification.close();
+        });
+        set({ activeNotifications: [] });
         // Also stop the notification timer
         get().stopNotifications();
       },
 
       simplyCloseNotifications: () => {
         // Close all active notifications without stopping the timer
-        if ('Notification' in window) {
-          // Get all active notifications and close them
-          const activeNotifications = document.querySelectorAll('.notification');
-          activeNotifications.forEach(notification => {
-            if (notification instanceof Notification) {
-              notification.close();
-            }
-          });
-        }
+        const { activeNotifications } = get();
+        activeNotifications.forEach(notification => {
+          notification.close();
+        });
+        set({ activeNotifications: [] });
       },
+
+      setActiveNotifications: (notifications) => set({ activeNotifications: notifications }),
     }),
     {
       name: 'notification-storage',
