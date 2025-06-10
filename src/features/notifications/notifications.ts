@@ -18,6 +18,8 @@ interface NotificationState {
   requestPermission: () => Promise<void>;
   startNotifications: () => void;
   stopNotifications: () => void;
+  closeAllNotifications: () => void;
+  simplyCloseNotifications: () => void;
 }
 
 export const useNotificationStore = create<NotificationState>()(
@@ -42,23 +44,19 @@ export const useNotificationStore = create<NotificationState>()(
           // Modal is closed, check if timer should restart
           console.log('Modal closed, checking if timer should restart.');
           if (get().isEnabled && get().permission === 'granted') {
-             console.log('Notifications enabled and permitted.');
-             // Start timer only if one is not already running
-             if (get().intervalId === null) {
-                console.log('Timer is not running, starting notifications.');
-                // Use a slight delay to allow state updates to propagate if needed
-                setTimeout(() => {
-                     // Re-check conditions after timeout
-                    if (!get().isModalOpen && get().isEnabled && get().permission === 'granted' && get().intervalId === null) {
-                       console.log('Attempting to restart timer after modal close (delayed check)');
-                       get().startNotifications();
-                    }
-                }, 100);
-             } else {
-                 console.log('Timer is already running, no need to restart.');
-             }
-          } else {
-              console.log('Notifications not enabled or permitted, not restarting timer.');
+            console.log('Notifications enabled and permitted.');
+            // Start timer only if one is not already running
+            if (get().intervalId === null) {
+              console.log('Timer is not running, starting notifications.');
+              // Use a slight delay to allow state updates to propagate if needed
+              setTimeout(() => {
+                // Re-check conditions after timeout
+                if (!get().isModalOpen && get().isEnabled && get().permission === 'granted' && get().intervalId === null) {
+                  console.log('Attempting to restart timer after modal close (delayed check)');
+                  get().startNotifications();
+                }
+              }, 100);
+            }
           }
         } else {
           // If modal is opened and timer is running, stop it
@@ -192,6 +190,34 @@ export const useNotificationStore = create<NotificationState>()(
           set({ intervalId: null }); // Set intervalId to null when stopped
         }
          // isEnabled state is controlled by user toggle in settings, not here.
+      },
+
+      closeAllNotifications: () => {
+        // Close all active notifications
+        if ('Notification' in window) {
+          // Get all active notifications and close them
+          const activeNotifications = document.querySelectorAll('.notification');
+          activeNotifications.forEach(notification => {
+            if (notification instanceof Notification) {
+              notification.close();
+            }
+          });
+        }
+        // Also stop the notification timer
+        get().stopNotifications();
+      },
+
+      simplyCloseNotifications: () => {
+        // Close all active notifications without stopping the timer
+        if ('Notification' in window) {
+          // Get all active notifications and close them
+          const activeNotifications = document.querySelectorAll('.notification');
+          activeNotifications.forEach(notification => {
+            if (notification instanceof Notification) {
+              notification.close();
+            }
+          });
+        }
       },
     }),
     {

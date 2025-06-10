@@ -24,6 +24,7 @@ export default function Settings() {
     requestPermission,
     notificationInterval,
     setNotificationInterval,
+    simplyCloseNotifications,
   } = useNotificationStore();
   const { isKeepFitEnabled, setKeepFitEnabled } = useFeatureFlags();
   const [notificationIntervalInput, setNotificationIntervalInput] =
@@ -46,6 +47,7 @@ export default function Settings() {
       await requestPermission();
     } else {
       // Disable notifications
+      useNotificationStore.getState().closeAllNotifications();
       useNotificationStore.getState().setIsEnabled(false);
     }
   };
@@ -69,6 +71,25 @@ export default function Settings() {
       return 'Not requested';
     }
     return isEnabled ? 'Enabled' : 'Disabled';
+  };
+
+  const handleTestNotification = () => {
+    if ('Notification' in window && Notification.permission === 'granted') {
+      const notification = new Notification('Focus Check-in', {
+        body: 'How is your focus level right now?',
+        icon: '/favicon.ico',
+      });
+
+      notification.onclick = () => {
+        console.log('Notification clicked, opening modal and stopping timer.');
+        window.focus();
+        notification.close();
+        // Dispatch a custom event that the app can listen to
+        window.dispatchEvent(new CustomEvent('showPulseModal'));
+      };
+    } else {
+      toast.error('Notifications not permitted');
+    }
   };
 
   if (authLoading) {
@@ -143,6 +164,22 @@ export default function Settings() {
                   Please enable notifications in your browser settings
                 </p>
               )}
+              {/* Test Buttons */}
+              <div className="flex gap-2 mt-4">
+                <button
+                  className="btn btn-sm btn-primary"
+                  onClick={handleTestNotification}
+                  disabled={permission !== 'granted'}
+                >
+                  Test Notification
+                </button>
+                <button
+                  className="btn btn-sm btn-secondary"
+                  onClick={() => simplyCloseNotifications()}
+                >
+                  Close Notifications
+                </button>
+              </div>
             </div>
             <div className="flex md:justify-end">
               <button

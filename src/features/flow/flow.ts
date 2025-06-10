@@ -104,7 +104,7 @@ export const useFlowStore = create<FlowState>((set, get) => ({
       if (error) throw error;
       
       // Stop notifications when Flow is stopped
-      useNotificationStore.getState().stopNotifications();
+      useNotificationStore.getState().simplyCloseNotifications();
       
       set({ currentEntry: null });
       await get().fetchEntries();

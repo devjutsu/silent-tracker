@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import { useAuthStore } from '@/features/auth/auth';
 import { useFeatureFlags } from '@/features/settings/featureFlags';
 import { useMenuStore } from './useMenuStore';
+import { useNotificationStore } from '@/features/notifications/notifications';
 
 export default function MenuModal() {
   const { signOut } = useAuthStore();
@@ -16,6 +17,8 @@ export default function MenuModal() {
   if (!isOpen) return null;
 
   async function handleSignOut() {
+    // Close all notifications before signing out
+    useNotificationStore.getState().closeAllNotifications();
     await signOut();
     setIsMenuOpen(false);
     toast.success('Signed out successfully');

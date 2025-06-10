@@ -32,7 +32,7 @@ export default function ActiveFlow({ currentEntry: propCurrentEntry }: ActiveFlo
     return (
       <div className="stat">
         <div className="stat-title">Active Flow</div>
-        <div className="stat-value">—</div>
+        <div className="stat-value text-sm text-warning">No active flow</div>
       </div>
     );
   }

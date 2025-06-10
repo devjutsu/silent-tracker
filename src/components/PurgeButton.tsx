@@ -1,6 +1,7 @@
 import { useConfirmStore } from '@/features/dialog/confirm';
 import { useFlowStore } from '@/features/flow/flow';
 import { usePulseStore } from '@/features/pulse/pulse';
+import { useNotificationStore } from '@/features/notifications/notifications';
 import toast from 'react-hot-toast';
 
 export default function PurgeButton() {
@@ -8,6 +9,8 @@ export default function PurgeButton() {
   const { purgeRecords } = usePulseStore();
 
   const handlePurge = async () => {
+    // Close all notifications before purging data
+    useNotificationStore.getState().simplyCloseNotifications();
     await Promise.all([purgeEntries(), purgeRecords()]);
     toast.success('All data has been purged');
   };
