@@ -11,7 +11,6 @@ export interface PulseRecord {
   activity: string;
   tag: string | null;
   energy_level: number;
-  mood: string | null;
   note: string | null;
   source: string | null;
 }
@@ -28,7 +27,6 @@ interface PulseState {
     activity: string,
     energyLevel: number,
     tag?: string,
-    mood?: string,
     note?: string,
     flowId?: string,
     source?: 'manual' | 'auto'
@@ -51,7 +49,6 @@ export const usePulseStore = create<PulseState>((set, get) => ({
     activity: string,
     energyLevel: number,
     tag?: string,
-    mood?: string,
     note?: string,
     flowId?: string,
     source: 'manual' | 'auto' = 'manual'
@@ -70,7 +67,6 @@ export const usePulseStore = create<PulseState>((set, get) => ({
             energy_level: energyLevel,
             activity,
             tag,
-            mood,
             note,
             flow_id: flowId || null,
             source,

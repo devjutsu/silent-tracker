@@ -21,6 +21,7 @@ export interface FlowEntry {
   goal: string | null;
   created_at: string;
   title: string | null;
+  activity: string | null;
   is_active: boolean;
   interrupted: boolean;
 }
@@ -34,7 +35,7 @@ interface FlowState {
   setCurrentEntry: (entry: FlowEntry | null) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
-  startFlow: (goal?: string, title?: string) => Promise<void>;
+  startFlow: (goal?: string, title?: string, activity?: string) => Promise<void>;
   stopFlow: () => Promise<void>;
   updateEntry: (id: string, updates: Partial<FlowEntry>) => Promise<void>;
   fetchEntries: () => Promise<void>;
@@ -52,7 +53,7 @@ export const useFlowStore = create<FlowState>((set, get) => ({
   setLoading: (loading) => set({ loading }),
   setError: (error) => set({ error }),
 
-  startFlow: async (goal?: string, title?: string) => {
+  startFlow: async (goal?: string, title?: string, activity?: string) => {
     try {
       set({ loading: true, error: null });
       const { data: { user } } = await supabase.auth.getUser();
@@ -66,6 +67,7 @@ export const useFlowStore = create<FlowState>((set, get) => ({
             start_time: new Date().toISOString(),
             goal: goal || null,
             title: title || null,
+            activity: activity || null,
             is_active: true,
             interrupted: false,
           },

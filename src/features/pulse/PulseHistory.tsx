@@ -71,7 +71,6 @@ export default function PulseHistory({ records: propRecords }: PulseHistoryProps
                 <th>Focus</th>
                 <th>Energy</th>
                 <th>Activity</th>
-                <th>Mood</th>
                 <th>Tag</th>
                 <th>Note</th>
               </tr>
@@ -115,7 +114,6 @@ export default function PulseHistory({ records: propRecords }: PulseHistoryProps
                     </div>
                   </td>
                   <td>{record.activity}</td>
-                  <td>{record.mood || '-'}</td>
                   <td>{record.tag || '-'}</td>
                   <td>
                     {record.note ? (

@@ -7,8 +7,6 @@ import { usePulseModalStore } from './pulseModalStore';
 import { useFlowStore } from '@/features/flow/flow';
 import toast from 'react-hot-toast';
 
-type ActivityType = 'work' | 'study' | 'rest' | 'procrastination' | 'fitness';
-
 export default function PulseModal() {
   const { isOpen, closeModal, openModal } = usePulseModalStore();
   const { addRecord } = usePulseStore();
@@ -16,9 +14,7 @@ export default function PulseModal() {
   const { currentEntry } = useFlowStore();
   const [focusLevel, setFocusLevel] = useState(3);
   const [energyLevel, setEnergyLevel] = useState(3);
-  const [activity, setActivity] = useState<ActivityType>('work');
   const [tag, setTag] = useState('');
-  const [mood, setMood] = useState('');
   const [note, setNote] = useState('');
 
   useEffect(() => {
@@ -54,10 +50,9 @@ export default function PulseModal() {
     try {
       await addRecord(
         focusLevel,
-        activity,
+        currentEntry?.activity || 'work',
         energyLevel,
         tag.trim() || undefined,
-        mood.trim() || undefined,
         note.trim() || undefined,
         currentEntry?.id
       );
@@ -66,14 +61,6 @@ export default function PulseModal() {
     } catch (error) {
       toast.error(`Failed to add pulse record ${error}`);
     }
-  };
-
-  const activityDescriptions: Record<ActivityType, string> = {
-    work: 'Professional tasks and work-related activities',
-    study: 'Learning, reading, or educational activities',
-    rest: 'Relaxation, breaks, or leisure time',
-    procrastination: 'Time spent avoiding tasks or being unproductive',
-    fitness: 'Exercise, sports, or physical activities'
   };
 
   return (
@@ -119,26 +106,6 @@ export default function PulseModal() {
 
           <div>
             <label className="label">
-              <span className="label-text">Activity Type</span>
-            </label>
-            <select
-              className="select select-bordered w-full"
-              value={activity}
-              onChange={(e) => setActivity(e.target.value as ActivityType)}
-            >
-              <option value="work">Work</option>
-              <option value="study">Study</option>
-              <option value="rest">Rest</option>
-              <option value="procrastination">Procrastination</option>
-              <option value="fitness">Fitness</option>
-            </select>
-            <p className="text-sm text-base-content/70 mt-1">
-              {activityDescriptions[activity]}
-            </p>
-          </div>
-
-          <div>
-            <label className="label">
               <span className="label-text">Tag (optional)</span>
             </label>
             <input
@@ -147,19 +114,6 @@ export default function PulseModal() {
               className="input input-bordered w-full"
               value={tag}
               onChange={(e) => setTag(e.target.value)}
-            />
-          </div>
-
-          <div>
-            <label className="label">
-              <span className="label-text">Mood (optional)</span>
-            </label>
-            <input
-              type="text"
-              placeholder="e.g., productive, tired, motivated"
-              className="input input-bordered w-full"
-              value={mood}
-              onChange={(e) => setMood(e.target.value)}
             />
           </div>
 

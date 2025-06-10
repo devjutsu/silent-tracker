@@ -51,6 +51,7 @@ CREATE TABLE flow (
   goal TEXT,
   created_at TIMESTAMP NOT NULL DEFAULT now(),
   title TEXT,
+  activity TEXT,
   is_active BOOLEAN NOT NULL DEFAULT TRUE,
   interrupted BOOLEAN NOT NULL DEFAULT FALSE
 );
@@ -65,7 +66,6 @@ CREATE TABLE pulse (
   activity TEXT NOT NULL,
   tag TEXT,
   energy_level INTEGER NOT NULL CHECK (energy_level >= 1 AND energy_level <= 10),
-  mood TEXT,
   note TEXT,
   source TEXT CHECK (source IN ('manual', 'auto'))
 );
