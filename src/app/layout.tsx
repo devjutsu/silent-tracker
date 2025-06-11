@@ -2,12 +2,8 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import ThemeProvider from '../features/theme/ThemeProvider';
-import MenuModal from '@/features/menu/MenuModal';
-import Header from '@/components/Header';
 import Bakery from '@/features/bakery/Bakery';
-import PulseModal from '@/features/pulse/PulseModal';
-import FlowModal from '@/features/flow/FlowModal';
-import ConfirmDialogWrapper from '@/features/dialog/ConfirmDialogWrapper';
+import ModalHost from '@/features/dialog/ModalHost';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -74,10 +70,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider>
-          <MenuModal />
-          <PulseModal />
-          <FlowModal />
-          <ConfirmDialogWrapper />
+        <ModalHost />
           {/* <Modal /> */}
           {children}
           {/* <AlertDialog /> */}
