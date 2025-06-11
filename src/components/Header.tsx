@@ -1,12 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { useThemeStore } from '@/features/theme/theme';
 import { useAuthStore } from '@/features/auth/auth';
 import { useModalStore } from '@/features/dialog/modalStore';
 
 export default function Header() {
-  const { theme } = useThemeStore();
   const { user } = useAuthStore();
   const { openModal } = useModalStore();
 

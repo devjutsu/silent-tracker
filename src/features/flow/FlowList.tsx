@@ -51,7 +51,7 @@ export default function FlowList({ entries: propEntries }: FlowListProps) {
   }
 
   const handleEdit = (entry: FlowEntry) => {
-    openModal('flow', { entry });
+    openModal('flow-edit', { entry });
   };
 
   return (

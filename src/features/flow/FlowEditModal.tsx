@@ -31,7 +31,7 @@ export default function FlowEditModal({ entry, onClose }: FlowEditModalProps) {
   }, [setModalOpen, entry]);
 
   const handleDelete = async () => {
-    const confirmed = await openModal('confirm', {
+    await openModal('confirm', {
       title: 'Delete Flow Entry',
       content: 'Are you sure you want to delete this flow entry? This action cannot be undone.',
       onConfirm: async () => {

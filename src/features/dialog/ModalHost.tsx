@@ -3,6 +3,7 @@ import { useModalStore } from '@/features/dialog/modalStore';
 import MenuModal from '@/features/menu/MenuModal';
 import PulseModal from '@/features/pulse/PulseModal';
 import FlowModal from '@/features/flow/FlowModal';
+import FlowEditModal from '@/features/flow/FlowEditModal';
 import ConfirmDialog from '@/features/dialog/ConfirmDialog';
 import { ComponentType } from 'react';
 
@@ -10,6 +11,7 @@ const modalRegistry: Record<string, ComponentType<any>> = {
   menu: MenuModal,
   pulse: PulseModal,
   flow: FlowModal,
+  'flow-edit': FlowEditModal,
   confirm: ConfirmDialog,
 };
 
