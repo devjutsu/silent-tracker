@@ -76,10 +76,15 @@ export const useFlowStore = create<FlowState>((set, get) => ({
         .single();
 
       if (error) throw error;
+      
+      // First close the FlowModal
+      useModalStore.getState().closeModal();
+      
+      // Then set the current entry and fetch entries
       set({ currentEntry: data });
       await get().fetchEntries();
       
-      // Open PulseModal after successfully starting flow
+      // Finally open the PulseModal
       useModalStore.getState().openModal('pulse', {});
     } catch (error) {
       set({ error: error instanceof Error ? error.message : 'An error occurred' });

@@ -41,7 +41,6 @@ export default function FlowModal({ onClose }: FlowModalProps) {
     try {
       await startFlow(goal, title.trim() || undefined, activity);
       toast.success('Flow started successfully');
-      onClose();
     } catch (error) {
       toast.error(`Failed to start flow: ${error}`);
     }
