@@ -3,6 +3,13 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 ## Next things:
 [Boilerplate to check with](https://www.ory.sh/blog/enterprise-ready-saas-starter-kit)
 
+Let's rename FlowModal to FlowStartModal
+Let's rename FlowModal to FlowStartModal
+Let's rename PulseModal to FlowStartPulseModal.
+
+I think we need to separate PulseModal. 
+When flow starts we will need to show PulseModal, but other times while flow session is running, better to show simpler modal, 
+
 ### Do things:
 - [x] dashboard in '/' page
 - [x] fix user in Header
@@ -31,12 +38,18 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 - [ ] Internationalization
 - [ ] Unify all rounded-xx classes
 
+- [ ] Музыкальное сопровождение
+
 - [ ] Распространение
+- - [ ] Send invite
+- - [ ] Invited users page
 - [ ] Платная подписка
 - [ ] Пуш нотификации
 - [ ] Оповещения емэйл
 - [ ] Wheel of Life (switch to bars also)
-
+- [ ] Integrate mermaid.js BPMN
+- [ ] Упражнения для глаз
+- [ ] Упражнения для разминки шеи
 
 ## DB
 ### Pulse

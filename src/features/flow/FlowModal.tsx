@@ -102,12 +102,18 @@ export default function FlowModal() {
             <label className="label">
               <span className="label-text">Goal (optional)</span>
             </label>
-            <textarea
+            <input
+              type="text"
               placeholder="What do you want to achieve in this flow?"
-              className="textarea textarea-bordered w-full"
+              className="input input-bordered w-full"
               value={goal}
               onChange={(e) => setGoal(e.target.value)}
-              rows={3}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleSubmit(e);
+                }
+              }}
             />
           </div>
 

@@ -1,6 +1,6 @@
 import { CirclePause, CirclePlay } from 'lucide-react';
 import { useFlowStore, FlowEntry } from './flow';
-import { useFlowModalStore } from './flowModalStore';
+import { useModalStore } from '@/features/dialog/modalStore';
 import toast from 'react-hot-toast';
 
 interface FlowOpsProps {
@@ -9,7 +9,7 @@ interface FlowOpsProps {
 
 export default function FlowOps({ currentEntry: propCurrentEntry }: FlowOpsProps) {
   const { currentEntry: storeCurrentEntry, stopFlow } = useFlowStore();
-  const { openModal } = useFlowModalStore();
+  const { openModal } = useModalStore();
   const currentEntry = propCurrentEntry ?? storeCurrentEntry;
 
   const handleStop = async () => {
@@ -35,7 +35,7 @@ export default function FlowOps({ currentEntry: propCurrentEntry }: FlowOpsProps
         ) : (
           <button
             className="btn btn-lg btn-primary"
-            onClick={openModal}
+            onClick={() => openModal('flow', {})}
           >
             <CirclePlay />
             Start Flow

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { supabase } from '@/lib/supabase';
 import { useNotificationStore } from '@/features/notifications/notifications';
-import { usePulseModalStore } from '@/features/pulse/pulseModalStore';
+import { useModalStore } from '@/features/dialog/modalStore';
 
 // Utility functions for timezone conversion
 const toLocalTime = (utcDate: string | Date): Date => {
@@ -22,6 +22,7 @@ export interface FlowEntry {
   created_at: string;
   title: string | null;
   activity: string | null;
+  focus_level: number | null;
   is_active: boolean;
   interrupted: boolean;
 }
@@ -35,7 +36,7 @@ interface FlowState {
   setCurrentEntry: (entry: FlowEntry | null) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
-  startFlow: (goal?: string, title?: string, activity?: string) => Promise<void>;
+  startFlow: (goal?: string, title?: string, activity?: string, focusLevel?: number) => Promise<void>;
   stopFlow: () => Promise<void>;
   updateEntry: (id: string, updates: Partial<FlowEntry>) => Promise<void>;
   fetchEntries: () => Promise<void>;
@@ -53,7 +54,7 @@ export const useFlowStore = create<FlowState>((set, get) => ({
   setLoading: (loading) => set({ loading }),
   setError: (error) => set({ error }),
 
-  startFlow: async (goal?: string, title?: string, activity?: string) => {
+  startFlow: async (goal?: string, title?: string, activity?: string, focusLevel?: number) => {
     try {
       set({ loading: true, error: null });
       const { data: { user } } = await supabase.auth.getUser();
@@ -68,6 +69,7 @@ export const useFlowStore = create<FlowState>((set, get) => ({
             goal: goal || null,
             title: title || null,
             activity: activity || null,
+            focus_level: focusLevel || null,
             is_active: true,
             interrupted: false,
           },
@@ -80,7 +82,7 @@ export const useFlowStore = create<FlowState>((set, get) => ({
       await get().fetchEntries();
       
       // Open PulseModal after successfully starting flow
-      usePulseModalStore.getState().openModal();
+      useModalStore.getState().openModal('pulse', {});
     } catch (error) {
       set({ error: error instanceof Error ? error.message : 'An error occurred' });
     } finally {

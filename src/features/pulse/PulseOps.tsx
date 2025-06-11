@@ -1,15 +1,15 @@
 import { SatelliteDish } from 'lucide-react';
-import { usePulseModalStore } from './pulseModalStore';
+import { useModalStore } from '@/features/dialog/modalStore';
 
 export default function PulseOps() {
-  const { openModal } = usePulseModalStore();
+  const { openModal } = useModalStore();
 
   return (
     <div className="card bg-base-100 shadow-xl">
       <div className="card-body">
         <button
           className="btn btn-lg btn-secondary"
-          onClick={openModal}
+          onClick={() => openModal('pulse', {})}
         >
           <SatelliteDish />
           Record Pulse
