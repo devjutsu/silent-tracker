@@ -22,7 +22,6 @@ export interface FlowEntry {
   created_at: string;
   title: string | null;
   activity: string | null;
-  focus_level: number | null;
   is_active: boolean;
   interrupted: boolean;
 }
@@ -69,7 +68,6 @@ export const useFlowStore = create<FlowState>((set, get) => ({
             goal: goal || null,
             title: title || null,
             activity: activity || null,
-            focus_level: focusLevel || null,
             is_active: true,
             interrupted: false,
           },

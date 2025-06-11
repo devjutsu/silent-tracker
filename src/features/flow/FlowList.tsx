@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useFlowStore, FlowEntry } from '@/features/flow/flow';
-import { useFlowEditModalStore } from './flowEditModalStore';
-import FlowEditModal from './FlowEditModal';
+import { useModalStore } from '@/features/dialog/modalStore';
 import FocusTimer from './FocusTimer';
 
 interface FlowListProps {
@@ -10,8 +9,7 @@ interface FlowListProps {
 
 export default function FlowList({ entries: propEntries }: FlowListProps) {
   const { entries: storeEntries, fetchEntries, loading } = useFlowStore();
-  const { openModal } = useFlowEditModalStore();
-  const [selectedEntry, setSelectedEntry] = useState<FlowEntry | null>(null);
+  const { openModal } = useModalStore();
   const entries = propEntries || storeEntries;
 
   useEffect(() => {
@@ -42,7 +40,7 @@ export default function FlowList({ entries: propEntries }: FlowListProps) {
             </p>
             <button
               className="btn btn-outline btn-secondary"
-              onClick={() => openModal()}
+              onClick={() => openModal('flow', {})}
             >
               Start Your First Flow
             </button>
@@ -53,70 +51,66 @@ export default function FlowList({ entries: propEntries }: FlowListProps) {
   }
 
   const handleEdit = (entry: FlowEntry) => {
-    setSelectedEntry(entry);
-    openModal();
+    openModal('flow', { entry });
   };
 
   return (
-    <>
-      <div className="card bg-base-100 shadow-xl mt-4">
-        <div className="card-body">
-          <h2 className="card-title">Recent Activity</h2>
-          <div className="overflow-x-auto">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Title</th>
-                  <th>Goal</th>
-                  <th>Duration</th>
-                  <th>Status</th>
-                  <th>Actions</th>
+    <div className="card bg-base-100 shadow-xl mt-4">
+      <div className="card-body">
+        <h2 className="card-title">Recent Activity</h2>
+        <div className="overflow-x-auto">
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Title</th>
+                <th>Goal</th>
+                <th>Duration</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {entries.map((entry) => (
+                <tr key={entry.id}>
+                  <td>{new Date(entry.start_time).toLocaleString()}</td>
+                  <td>{entry.title || '-'}</td>
+                  <td>{entry.goal || '-'}</td>
+                  <td>
+                    {entry.end_time
+                      ? `${Math.round(
+                          (new Date(entry.end_time).getTime() -
+                            new Date(entry.start_time).getTime()) /
+                            1000 /
+                            60
+                        )} minutes`
+                      : entry.is_active ? (
+                          <FocusTimer startTime={entry.start_time} size="sm" />
+                        ) : 'In Progress'}
+                  </td>
+                  <td>
+                    {entry.is_active ? (
+                      <span className="badge badge-success">Active</span>
+                    ) : entry.interrupted ? (
+                      <span className="badge badge-error">Interrupted</span>
+                    ) : (
+                      <span className="badge badge-neutral">Completed</span>
+                    )}
+                  </td>
+                  <td>
+                    <button 
+                      className="btn btn-ghost btn-xs"
+                      onClick={() => handleEdit(entry)}
+                    >
+                      Edit
+                    </button>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {entries.map((entry) => (
-                  <tr key={entry.id}>
-                    <td>{new Date(entry.start_time).toLocaleString()}</td>
-                    <td>{entry.title || '-'}</td>
-                    <td>{entry.goal || '-'}</td>
-                    <td>
-                      {entry.end_time
-                        ? `${Math.round(
-                            (new Date(entry.end_time).getTime() -
-                              new Date(entry.start_time).getTime()) /
-                              1000 /
-                              60
-                          )} minutes`
-                        : entry.is_active ? (
-                            <FocusTimer startTime={entry.start_time} size="sm" />
-                          ) : 'In Progress'}
-                    </td>
-                    <td>
-                      {entry.is_active ? (
-                        <span className="badge badge-success">Active</span>
-                      ) : entry.interrupted ? (
-                        <span className="badge badge-error">Interrupted</span>
-                      ) : (
-                        <span className="badge badge-neutral">Completed</span>
-                      )}
-                    </td>
-                    <td>
-                      <button 
-                        className="btn btn-ghost btn-xs"
-                        onClick={() => handleEdit(entry)}
-                      >
-                        Edit
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
-      {selectedEntry && <FlowEditModal entry={selectedEntry} />}
-    </>
+    </div>
   );
 } 
