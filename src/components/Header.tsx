@@ -1,15 +1,15 @@
 'use client';
 
 import Link from 'next/link';
-import { useMenuStore } from '@/features/menu/useMenuStore';
-import { LIGHT_THEME, useThemeStore } from '@/features/theme/theme';
+import { useThemeStore } from '@/features/theme/theme';
 import { useAuthStore } from '@/features/auth/auth';
+import { useModalStore } from '@/features/dialog/modalStore';
 
 export default function Header() {
-  const setIsMenuOpen = useMenuStore((state) => state.setIsMenuOpen);
   const { theme } = useThemeStore();
-
   const { user } = useAuthStore();
+  const { openModal } = useModalStore();
+
   /* eslint-disable @next/next/no-img-element */
   return (
     <header className="navbar top-0 z-50 w-full border-b border-neutral p-0 px-8 bg-base-300">
@@ -34,7 +34,7 @@ export default function Header() {
         {user && (
           <button
             className="btn btn-ghost btn-circle avatar"
-            onClick={() => setIsMenuOpen(true)}
+            onClick={() => openModal('menu', {})}
             aria-label="Open menu"
           >
             <div className="w-10 rounded-full">
