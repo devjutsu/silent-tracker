@@ -84,8 +84,8 @@ export const useFlowStore = create<FlowState>((set, get) => ({
       set({ currentEntry: data });
       await get().fetchEntries();
       
-      // Finally open the PulseModal
-      useModalStore.getState().openModal('pulse', {});
+      // Finally open the PulseModal with start state
+      useModalStore.getState().openModal('pulse', { flowState: 'start' });
     } catch (error) {
       set({ error: error instanceof Error ? error.message : 'An error occurred' });
     } finally {
@@ -113,8 +113,14 @@ export const useFlowStore = create<FlowState>((set, get) => ({
       // Stop notifications when Flow is stopped
       useNotificationStore.getState().simplyCloseNotifications();
       
+      // Store the flow ID before clearing currentEntry
+      const stoppedFlowId = currentEntry.id;
+      
       set({ currentEntry: null });
       await get().fetchEntries();
+
+      // Open PulseModal with end state
+      useModalStore.getState().openModal('pulse', { flowId: stoppedFlowId, flowState: 'end' });
     } catch (error) {
       set({ error: error instanceof Error ? error.message : 'An error occurred' });
     } finally {

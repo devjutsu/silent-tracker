@@ -6,11 +6,15 @@ import { useNotificationStore } from '@/features/notifications/notifications';
 import { useFlowStore } from '@/features/flow/flow';
 import toast from 'react-hot-toast';
 
+type FlowState = 'start' | 'progress' | 'end';
+
 interface PulseModalProps {
   onClose: () => void;
+  flowId?: string;
+  flowState?: FlowState;
 }
 
-export default function PulseModal({ onClose }: PulseModalProps) {
+export default function PulseModal({ onClose, flowId, flowState = 'progress' }: PulseModalProps) {
   const { addRecord } = usePulseStore();
   const { setModalOpen } = useNotificationStore();
   const { currentEntry } = useFlowStore();
@@ -31,13 +35,14 @@ export default function PulseModal({ onClose }: PulseModalProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      const activeFlowId = currentEntry?.id;
       await addRecord(
         focusLevel,
         currentEntry?.activity || 'work',
         energyLevel,
         tag.trim() || undefined,
         note.trim() || undefined,
-        currentEntry?.id
+        activeFlowId || flowId
       );
       toast.success('Pulse record added successfully');
       onClose();
@@ -46,9 +51,21 @@ export default function PulseModal({ onClose }: PulseModalProps) {
     }
   };
 
+  const getTitle = () => {
+    switch (flowState) {
+      case 'start':
+        return 'How is your focus?';
+      case 'end':
+        return 'How was your focus?';
+      case 'progress':
+      default:
+        return 'How is your focus now?';
+    }
+  };
+
   return (
     <div className="bg-base-100 rounded-lg p-6 w-full max-w-md shadow-xl">
-      <h2 className="text-xl sm:text-2xl font-bold mb-2">How is your focus?</h2>
+      <h2 className="text-xl sm:text-2xl font-bold mb-2">{getTitle()}</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="label">
