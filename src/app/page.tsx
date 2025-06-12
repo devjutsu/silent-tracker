@@ -8,8 +8,6 @@ import { usePulseStore } from '@/features/pulse/pulse';
 import { useNotificationStore } from '@/features/notifications/notifications';
 import Login from '@/features/auth/Login';
 
-import FlowList from '@/features/flow/FlowList';
-import PulseHistory from '@/features/pulse/PulseHistory';
 import TodayFlow from '@/features/flow/TodayFlow';
 import ActiveFlow from '@/features/flow/ActiveFlow';
 import FlowOps from '@/features/flow/FlowOps';
@@ -18,6 +16,9 @@ import CaloryWidget from '@/features/calory/CaloryWidget';
 import HydrationWidget from '@/features/hydration/HydrationWidget';
 import FitWidget from '@/features/fit/FitWidget';
 import Header from '@/components/Header';
+import ActivityTimeline from '@/features/flow/ActivityTimeline';
+import FlowList from '@/features/flow/FlowList';
+import PulseHistory from '@/features/pulse/PulseHistory';
 
 export default function Home() {
   const { user, error: authError } = useAuthStore();
@@ -79,6 +80,8 @@ export default function Home() {
             <FitWidget />
           </div>
         </div>
+
+        <ActivityTimeline />
 
         <FlowList />
         <PulseHistory />
