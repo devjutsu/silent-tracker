@@ -54,7 +54,7 @@ export default function PulseModal({ onClose, flowId, flowState = 'progress' }: 
   const getTitle = () => {
     switch (flowState) {
       case 'start':
-        return 'How is your focus?';
+        return 'How is your focus now?';
       case 'end':
         return 'How was your focus?';
       case 'progress':
@@ -65,13 +65,10 @@ export default function PulseModal({ onClose, flowId, flowState = 'progress' }: 
 
   return (
     <div className="bg-base-100 rounded-lg p-6 w-full max-w-md shadow-xl">
-      <h2 className="text-xl sm:text-2xl font-bold mb-2">{getTitle()}</h2>
+      <h2 className="text-xl sm:text-2xl font-bold mb-8 text-center">{getTitle()}</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="label">
-            <span className="label-text">Focus Level</span>
-          </label>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-center gap-2">
             <span className="text-2xl">😵‍💫</span>
             <div className="rating rating-md">
               {[1, 2, 3, 4, 5].map((level) => (
@@ -90,10 +87,12 @@ export default function PulseModal({ onClose, flowId, flowState = 'progress' }: 
         </div>
 
         <div>
-          <label className="label">
-            <span className="label-text">Energy Level</span>
-          </label>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-center gap-2">
+            <label className="label">
+              <span className="label-text">Energy</span>
+            </label>
+          </div>
+          <div className="flex items-center justify-center gap-2">
             <span className="text-2xl">🪫</span>
             <div className="rating rating-md">
               {[1, 2, 3, 4, 5].map((level) => (
@@ -111,33 +110,39 @@ export default function PulseModal({ onClose, flowId, flowState = 'progress' }: 
           </div>
         </div>
 
-        <div>
-          <label className="label">
-            <span className="label-text">Tag (optional)</span>
-          </label>
-          <input
-            type="text"
-            className="input input-bordered w-full"
-            value={tag}
-            onChange={(e) => setTag(e.target.value)}
-            placeholder="e.g., coding, reading"
-          />
-        </div>
+        {!currentEntry && flowState !== 'end' && (
+          <div>
+            <label className="label">
+              <span className="label-text">Tag</span>
+            </label>
+            <input
+              type="text"
+              className="input input-bordered w-full"
+              value={tag}
+              onChange={(e) => setTag(e.target.value)}
+              placeholder="Add a tag..."
+            />
+          </div>
+        )}
 
-        <div>
-          <label className="label">
-            <span className="label-text">Note (optional)</span>
-          </label>
-          <textarea
-            className="textarea textarea-bordered w-full"
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            placeholder="How are you feeling?"
-            rows={3}
-          />
-        </div>
+        {!currentEntry && (
+          <div>
+            <div className="flex items-center justify-center gap-2 mt-8">
+              <label className="label">
+                <span className="label-text">Comment</span>
+              </label>
+            </div>
+            <textarea
+              className="textarea textarea-bordered w-full"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder="Add a comment..."
+              rows={3}
+            />
+          </div>
+        )}
 
-        <div className="flex justify-end gap-2">
+        <div className="flex justify-end gap-2 mt-8">
           <button type="button" className="btn" onClick={onClose}>
             Cancel
           </button>
