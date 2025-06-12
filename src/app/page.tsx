@@ -19,6 +19,7 @@ import Header from '@/components/Header';
 import ActivityTimeline from '@/features/flow/ActivityTimeline';
 import FlowList from '@/features/flow/FlowList';
 import PulseHistory from '@/features/pulse/PulseHistory';
+import LandingPreview from '@/landing/LandingPreview';
 
 export default function Home() {
   const { user, error: authError } = useAuthStore();
@@ -53,6 +54,9 @@ export default function Home() {
           />
         </div>
         <Login />
+        <div className="flex justify-center">
+          <LandingPreview />
+        </div>
       </div>
     );
   }
