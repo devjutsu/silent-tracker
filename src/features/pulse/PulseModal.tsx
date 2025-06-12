@@ -71,46 +71,43 @@ export default function PulseModal({ onClose, flowId, flowState = 'progress' }: 
           <label className="label">
             <span className="label-text">Focus Level</span>
           </label>
-          <div className="flex gap-4">
-            <button
-              type="button"
-              className={`btn btn-outline flex-1 ${focusLevel === 1 ? 'btn-primary' : ''}`}
-              onClick={() => setFocusLevel(1)}
-            >
-              😵 Distracted
-            </button>
-            <button
-              type="button"
-              className={`btn btn-outline flex-1 ${focusLevel === 3 ? 'btn-primary' : ''}`}
-              onClick={() => setFocusLevel(3)}
-            >
-              🙂 OK
-            </button>
-            <button
-              type="button"
-              className={`btn btn-outline flex-1 ${focusLevel === 5 ? 'btn-primary' : ''}`}
-              onClick={() => setFocusLevel(5)}
-            >
-              🔥 Great
-            </button>
+          <div className="flex items-center gap-2">
+            <span className="text-2xl">😵‍💫</span>
+            <div className="rating rating-md">
+              {[1, 2, 3, 4, 5].map((level) => (
+                <input
+                  key={level}
+                  type="radio"
+                  name="focus-level"
+                  className="mask mask-star-2 bg-warning"
+                  checked={focusLevel === level}
+                  onChange={() => setFocusLevel(level)}
+                />
+              ))}
+            </div>
+            <span className="text-2xl">🤩</span>
           </div>
         </div>
 
         <div>
           <label className="label">
-            <span className="label-text">Energy Level (1-5)</span>
+            <span className="label-text">Energy Level</span>
           </label>
-          <div className="rating rating-md ml-2">
-            {[1, 2, 3, 4, 5].map((level) => (
-              <input
-                key={level}
-                type="radio"
-                name="energy-level"
-                className="mask mask-star-2 bg-info"
-                checked={energyLevel === level}
-                onChange={() => setEnergyLevel(level)}
-              />
-            ))}
+          <div className="flex items-center gap-2">
+            <span className="text-2xl">🪫</span>
+            <div className="rating rating-md">
+              {[1, 2, 3, 4, 5].map((level) => (
+                <input
+                  key={level}
+                  type="radio"
+                  name="energy-level"
+                  className="mask mask-star-2 bg-info"
+                  checked={energyLevel === level}
+                  onChange={() => setEnergyLevel(level)}
+                />
+              ))}
+            </div>
+            <span className="text-2xl">⚡</span>
           </div>
         </div>
 
