@@ -28,7 +28,7 @@ export default function MenuModal({ onClose }: MenuModalProps) {
       role="dialog"
       aria-modal="true"
       aria-labelledby="menu-modal-title"
-      className="card shadow-2xl rounded-box w-full max-w-xs p-6 relative animate-fade-in bg-base-300/10"
+      className="card shadow-2xl rounded-box w-full max-w-xs p-6 relative animate-fade-in bg-base-300/40"
       onClick={(e) => e.stopPropagation()}
     >
       <button

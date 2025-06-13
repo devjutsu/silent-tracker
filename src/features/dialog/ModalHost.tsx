@@ -23,7 +23,10 @@ export default function ModalHost() {
   if (!Component) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
+    <div 
+      className="fixed inset-0 z-50 bg-info-content/50 flex items-center justify-center"
+      onClick={closeModal}
+    >
       <Component {...props} onClose={closeModal} />
     </div>
   );
